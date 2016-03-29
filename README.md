@@ -4,6 +4,7 @@
 
 ### Authors
 [Joe Perry](http://github.com/jwperry), [Justin Pease](https://github.com/Jpease1020), [James Crockett](https://github.com/jecrockett)
+
 This project was created as a part of the curriculum for the [Turing School of Software & Design](http://turing.io) to complete the "Gametime" project.
 
 ### Overview
@@ -25,4 +26,6 @@ To set up a local copy of this project, perform the following:
   7. To run tests in Node: ```npm test```
 
 ### Dependencies
+This project requires Node installed. [Click here to see Node download options](https://nodejs.org/en/download)
+If you prefer homebrew, run: ```brew install node```
 This application has many dependencies located in the ```package.json``` file. To install them, run: ```npm install```

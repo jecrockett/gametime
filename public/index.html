@@ -3,10 +3,16 @@
 <head>
   <meta charset="utf-8">
   <title>Game Time</title>
-  <link href="main.css" rel="stylesheet">
+  <link href="./style.css" rel="stylesheet">
 </head>
 <body>
+  <span id='connected-users-count'></span>
+  <span id='status'></span>
   <canvas id="game" width="1140px", height="560px"></canvas>
-  <script src="main.bundle.js"></script>
+  <script src='./socket.io/socket.io.js'</script>
+  <script src="./main.bundle.js"></script>
+  <script src="./client.js"></script>
+
+  </script>
 </body>
 </html>

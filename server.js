@@ -1,18 +1,27 @@
-const http = require('http');
 const express = require('express');
-
 const app = express();
+const port = process.env.PORT || 8181;
+const http = require('http').Server(app).listen(port, function() {
+  console.log('Listening on port ' + port + '.');
+});
+const io = require('socket.io')(http);
 
 app.use(express.static('public'));
 
 app.get('/', function(req, res) {
-  res.sendFile(__dirname + 'public/index.html');
+  res.sendFile(__dirname + '/public/index.html');
 });
 
-const port = process.env.PORT || 8181;
-const server = http.createServer(app)
-                 .listen(port, function() {
-                   console.log('Listening on port ' + port + '.');
-                 });
+io.on('connection', function(socket) {
+  console.log('A user has connected.', io.engine.clientsCount);
+  io.sockets.emit('usersConnected', io.engine.clientsCount);
+  socket.emit('status', 'You are connected!');
 
-module.exports = server;
+  socket.on('keysPressed', function(socket){
+    
+  });
+
+  socket.on('disconnect', function(socket) {
+    console.log('A user has disconnected.', io.engine.clientsCount);
+  });
+});

@@ -51,12 +51,12 @@ describe('Player eats food', function(){
       assert.equal(foodArray.length, 1)
       // player1 needs to move 3 times towards the food to have it be in range to eat
       keyTracker.keyPressed[83] = true;
-      player1.move();
-      assert.equal(foodArray.length, 1)
-      player1.move()
-      player1.move()
 
-      player1.eatFood(foodArray)
+      for(var i = 0; i < 10; i++){
+        player1.move();
+        player1.eatFood(foodArray)
+      };
+
       assert.equal(foodArray.length, 0)
     });
   });

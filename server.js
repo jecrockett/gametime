@@ -5,6 +5,7 @@ const http = require('http').Server(app).listen(port, function() {
   console.log('Listening on port ' + port + '.');
 });
 const io = require('socket.io')(http);
+var playerMovements = {};
 
 app.use(express.static('public'));
 
@@ -17,8 +18,12 @@ io.on('connection', function(socket) {
   io.sockets.emit('usersConnected', io.engine.clientsCount);
   socket.emit('status', 'You are connected!');
 
-  socket.on('keysPressed', function(socket){
-    
+  socket.on('message', function(channel, message){
+    if (channel === 'keysPressed') {
+      playeMovements[socket.id] = message;
+      console.log(playserMovements);
+    }
+
   });
 
   socket.on('disconnect', function(socket) {

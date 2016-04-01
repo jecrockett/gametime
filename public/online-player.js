@@ -1,4 +1,5 @@
-function OnlinePlayer(name, x, y) {
+function OnlinePlayer(id, name, x, y) {
+  this.id   = id;
   this.name = name;
   this.x    = x;
   this.y    = y;
@@ -16,9 +17,19 @@ function OnlinePlayer(name, x, y) {
 }
 
 OnlinePlayer.prototype = {
-  move: function() {
-      this.movePlayer(this.speed);
-      return this;
+  move: function(keysPressed) {
+    if (keysPressed[37] && this.canMoveLeft()) {
+      this.moveLeft();
+    }
+    if (keysPressed[39] && this.canMoveRight()) {
+      this.moveRight();
+    }
+    if (keysPressed[40] && this.canMoveDown()) {
+      this.moveDown();
+    }
+    if (keysPressed[38] && this.canMoveUp()) {
+      this.moveUp();
+    }
   },
 
   eatFood: function(food) {
@@ -32,6 +43,22 @@ OnlinePlayer.prototype = {
         if (this.speed > 0.8){ this.speed -= 0.03; }
       }
     }
+  },
+
+  canMoveLeft: function(){
+    return (this.x-this.mass > 0);
+  },
+
+  canMoveRight: function(){
+    return (this.x+this.mass < 1140);
+  },
+
+  canMoveUp: function(){
+    return (this.y-this.mass > 0);
+  },
+
+  canMoveDown: function(){
+    return (this.y+this.mass < 560);
   },
 
   movePlayer1: function() {

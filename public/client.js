@@ -15,6 +15,7 @@ this.onkeyup = function(event) {
 };
 
 socket.on('usersConnected', function(count) {
+  socket.send('')
   connectionCount.innerText = count + ' users connected.';
 });
 

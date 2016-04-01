@@ -18,16 +18,16 @@ app.get('/', function(req, res) {
 io.on('connection', function(socket) {
   var numOfPlayers = Object.keys(players).length;
   var player_name = ("Player " + (numOfPlayers + 1));
-  players[socket.id] = new OnlinePlayer(player_name, (numOfPlayers * 5), (numOfPlayers * 5));
+  players[socket.id] = new OnlinePlayer(socket.id, player_name, (numOfPlayers * 5), (numOfPlayers * 5));
   console.log('A user has connected.', io.engine.clientsCount);
   io.sockets.emit('usersConnected', io.engine.clientsCount);
   socket.emit('status', 'You are connected!');
 
-  console.log(players);
 
   socket.on('message', function(channel, message){
     if (channel === 'keysPressed') {
-      players[socket.id]['keysPressed'] = message;
+      var player = findPlayer(socket.id);
+      player.move(message);
     }
   });
 
@@ -35,3 +35,13 @@ io.on('connection', function(socket) {
     console.log('A user has disconnected.', io.engine.clientsCount);
   });
 });
+
+
+function findPlayer(socketID) {
+  console.log(players);
+  for(var i = 0; i < Object.keys(players).length; i++) {
+    if (players[socketID].id === socketID) {
+      return players[socketID];
+    }
+  }
+}

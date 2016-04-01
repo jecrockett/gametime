@@ -14,7 +14,7 @@ function OnlinePlayer(id, name, x, y) {
   this.moveRight = this.movePlayer.bind(this, 1, 0);
   this.moveUp = this.movePlayer.bind(this, 0, -1);
   this.moveDown = this.movePlayer.bind(this, 0, 1);
-}
+};
 
 OnlinePlayer.prototype = {
   move: function(keysPressed) {

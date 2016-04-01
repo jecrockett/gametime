@@ -15,11 +15,13 @@ describe('Player movement', function(){
       assert.equal(player1.x, 10);
       assert.equal(player2.x, 20);
 
+      var player1StartXcoor = player1.x
+
       keyTracker.keyPressed[65] = true;
       player1.move();
       player2.move();
 
-      assert.equal(player1.x, 9);
+      assert.equal(player1.x, player1StartXcoor - player1.speed);
       assert.equal(player2.x, 20);
     });
 
@@ -29,6 +31,8 @@ describe('Player movement', function(){
       let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
       let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
 
+      var player1StartXcoor = player1.x
+
       assert.equal(player1.x, 10);
       assert.equal(player2.x, 20);
 
@@ -36,7 +40,7 @@ describe('Player movement', function(){
       player1.move();
       player2.move();
 
-      assert.equal(player1.x, 11);
+      assert.equal(player1.x, player1StartXcoor + player1.speed);
       assert.equal(player2.x, 20);
     });
 
@@ -46,6 +50,8 @@ describe('Player movement', function(){
       let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
       let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
 
+      var player1StartYcoor = player1.y
+
       assert.equal(player1.y, 10);
       assert.equal(player2.y, 20);
 
@@ -53,7 +59,7 @@ describe('Player movement', function(){
       player1.move();
       player2.move();
 
-      assert.equal(player1.y, 9);
+      assert.equal(player1.y, player1StartYcoor - player1.speed);
       assert.equal(player2.y, 20);
     });
 
@@ -66,11 +72,13 @@ describe('Player movement', function(){
       assert.equal(player1.y, 10);
       assert.equal(player2.y, 20);
 
+      var player1StartYcoor = player1.y
+
       keyTracker.keyPressed[83] = true;
       player1.move();
       player2.move();
 
-      assert.equal(player1.y, 11);
+      assert.equal(player1.y, player1StartYcoor + player1.speed);
       assert.equal(player2.y, 20);
     });
   });
@@ -85,12 +93,14 @@ describe('Player movement', function(){
       assert.equal(player1.x, 10);
       assert.equal(player2.x, 20);
 
+      var player1StartXcoor = player2.x
+
       keyTracker.keyPressed[76] = true;
       player1.move();
       player2.move();
 
       assert.equal(player1.x, 10);
-      assert.equal(player2.x, 19);
+      assert.equal(player2.x, player1StartXcoor - player2.speed);
     });
 
     it('moves to the right independently', function(){
@@ -102,12 +112,14 @@ describe('Player movement', function(){
       assert.equal(player1.x, 10);
       assert.equal(player2.x, 20);
 
+      var player1StartXcoor = player2.x
+
       keyTracker.keyPressed[222] = true;
       player1.move();
       player2.move();
 
       assert.equal(player1.x, 10);
-      assert.equal(player2.x, 21);
+      assert.equal(player2.x, player1StartXcoor + player2.speed);
     });
 
     it('moves up independently', function(){
@@ -119,12 +131,14 @@ describe('Player movement', function(){
       assert.equal(player1.y, 10);
       assert.equal(player2.y, 20);
 
+      var player2StartYcoor = player2.y
+
       keyTracker.keyPressed[80] = true;
       player1.move();
       player2.move();
 
       assert.equal(player1.y, 10);
-      assert.equal(player2.y, 19);
+      assert.equal(player2.y, player2StartYcoor - player2.speed);
     });
 
     it('moves down independently', function(){
@@ -136,12 +150,14 @@ describe('Player movement', function(){
       assert.equal(player1.y, 10);
       assert.equal(player2.y, 20);
 
+      var player2StartYcoor = player2.y
+
       keyTracker.keyPressed[186] = true;
       player1.move();
       player2.move();
 
       assert.equal(player1.y, 10);
-      assert.equal(player2.y, 21);
+      assert.equal(player2.y, player2StartYcoor + player2.speed);
     });
   });
 

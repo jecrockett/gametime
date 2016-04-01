@@ -15,7 +15,7 @@ describe('Player eats food', function(){
       var foodArray = [food1]
 
       assert.equal(foodArray.length, 1)
-      player1.eatFood(foodArray)
+      player1.eatFood(foodArray) // the eatFood function checks the area around a player and eats anything in range
       assert.equal(foodArray.length, 0)
     });
 
@@ -49,15 +49,14 @@ describe('Player eats food', function(){
       assert.equal(foodArray.length, 1)
       player1.eatFood(foodArray)
       assert.equal(foodArray.length, 1)
-
+      // player1 needs to move 3 times towards the food to have it be in range to eat
       keyTracker.keyPressed[83] = true;
+
       for(var i = 0; i < 10; i++){
         player1.move();
+        player1.eatFood(foodArray)
       };
-      assert.equal(foodArray.length, 1)
 
-      player1.move()
-      player1.eatFood(foodArray)
       assert.equal(foodArray.length, 0)
     });
   });

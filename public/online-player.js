@@ -18,16 +18,16 @@ function OnlinePlayer(id, name, x, y) {
 
 OnlinePlayer.prototype = {
   move: function(keysPressed) {
-    if (keysPressed[37] && this.canMoveLeft()) {
+    if (keysPressed[65] && this.canMoveLeft()) {
       this.moveLeft();
     }
-    if (keysPressed[39] && this.canMoveRight()) {
+    if (keysPressed[68] && this.canMoveRight()) {
       this.moveRight();
     }
-    if (keysPressed[40] && this.canMoveDown()) {
+    if (keysPressed[83] && this.canMoveDown()) {
       this.moveDown();
     }
-    if (keysPressed[38] && this.canMoveUp()) {
+    if (keysPressed[87] && this.canMoveUp()) {
       this.moveUp();
     }
   },

@@ -5,13 +5,17 @@ var statusMessage = document.getElementById('status');
 
 var keysPressed = {};
 this.onkeydown = function(event) {
-    keysPressed[event.keyCode] = true;
-      console.log(keysPressed);
-    socket.send('keysPressed', keysPressed);
+    if([65, 68, 83, 87].includes(event.keyCode)){
+      keysPressed[event.keyCode] = true;
+        console.log(keysPressed);
+      socket.send('keysPressed', keysPressed);
+    }
 };
 this.onkeyup = function(event) {
-    keysPressed[event.keyCode] = false;
-    socket.send('keysPressed', keysPressed);
+    if([65, 68, 83, 87].includes(event.keyCode)){
+      keysPressed[event.keyCode] = false;
+      socket.send('keysPressed', keysPressed);
+    }
 };
 
 socket.on('usersConnected', function(count) {

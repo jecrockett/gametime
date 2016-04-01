@@ -1,6 +1,6 @@
 var OnlinePlayer = require('./public/online-player');
-const express = require('express');
-const app = express();
+const EXPRESS = require('express');
+const app = EXPRESS();
 const port = process.env.PORT || 8181;
 const http = require('http').Server(app).listen(port, function() {
   console.log('Listening on port ' + port + '.');
@@ -9,7 +9,7 @@ const io = require('socket.io')(http);
 
 var players = {};
 
-app.use(express.static('public'));
+app.use(EXPRESS.static('public'));
 
 app.get('/', function(req, res) {
   res.sendFile(__dirname + '/public/index.html');
@@ -26,6 +26,7 @@ io.on('connection', function(socket) {
 
   socket.on('message', function(channel, message){
     if (channel === 'keysPressed') {
+      console.log(message);
       var player = findPlayer(socket.id);
       player.move(message);
     }

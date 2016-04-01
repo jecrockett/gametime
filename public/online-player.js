@@ -18,16 +18,17 @@ function OnlinePlayer(id, name, x, y) {
 
 OnlinePlayer.prototype = {
   move: function(keysPressed) {
-    if (keysPressed[65] && this.canMoveLeft()) {
+    console.log(keysPressed, typeof keysPressed);
+    if ((keysPressed.indexOf(65) > -1) && this.canMoveLeft()) {
       this.moveLeft();
     }
-    if (keysPressed[68] && this.canMoveRight()) {
+    if ((keysPressed.indexOf(68) > -1) && this.canMoveRight()) {
       this.moveRight();
     }
-    if (keysPressed[83] && this.canMoveDown()) {
+    if ((keysPressed.indexOf(83) > -1) && this.canMoveDown()) {
       this.moveDown();
     }
-    if (keysPressed[87] && this.canMoveUp()) {
+    if ((keysPressed.indexOf(87) > -1) && this.canMoveUp()) {
       this.moveUp();
     }
   },

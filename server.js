@@ -25,10 +25,10 @@ io.on('connection', function(socket) {
 
 
   socket.on('message', function(channel, message){
-    if (channel === 'keysPressed') {
-      console.log(message);
+    if (channel === 'keyDown') {
       var player = findPlayer(socket.id);
       player.move(message);
+      console.log(player.name, player.x, player.y);
     }
   });
 
@@ -39,7 +39,6 @@ io.on('connection', function(socket) {
 
 
 function findPlayer(socketID) {
-  console.log(players);
   for(var i = 0; i < Object.keys(players).length; i++) {
     if (players[socketID].id === socketID) {
       return players[socketID];

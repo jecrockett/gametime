@@ -5,17 +5,9 @@ var statusMessage = document.getElementById('status');
 
 this.onkeydown = function(event) {
     if([65, 68, 83, 87].includes(event.keyCode)){
-      var keysPressed = {};
-      keysPressed[event.keyCode] = true;
-        console.log(keysPressed);
-      socket.send('keysPressed', keysPressed);
-    }
-};
-this.onkeyup = function(event) {
-    if([65, 68, 83, 87].includes(event.keyCode)){
-      var keysPressed = {};
-      keysPressed[event.keyCode] = false;
-      socket.send('keysPressed', keysPressed);
+      var keysPressed = [];
+      keysPressed.push(event.keyCode);
+      socket.send('keyDown', keysPressed);
     }
 };
 

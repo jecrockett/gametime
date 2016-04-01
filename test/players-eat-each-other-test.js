@@ -5,12 +5,12 @@ const Player = require('../lib/player');
 const KeyTracker = require('../lib/keyboard-tracker');
 
 describe('Players eat each other or not', function(){
-  context('If in Range and one player is big enough', function(){
-    it('A player can eat another player', function(){
+  context('A player can eat another player', function(){
+    it('If in range and one player is big enough', function(){
       var canvas = { width: 500, height: 500 };
       var keyTracker = new KeyTracker(canvas);
       let player1 = new Player("Player 1", 5, 5, 10, keyTracker);
-      let player2 = new Player("Player 2", 5, 25, 5, keyTracker);
+      let player2 = new Player("Player 2", 5, 15, 5, keyTracker);
       var players = [player1, player2];
 
       assert.equal(players.length, 2);
@@ -18,19 +18,17 @@ describe('Players eat each other or not', function(){
 
       keyTracker.keyPressed[83] = true;
       player1.move();
-      player1.move();
-      player1.move();
       player1.eatPlayer(players);
 
       assert.equal(players.length, 1);
       assert.notInclude(players, player2);
     });
 
-    it('A player eats another player no matter how they collide', function(){
+    it('A smaller player moving towards a stationary bigger player is eaten', function(){
       var canvas = { width: 500, height: 500 };
       var keyTracker = new KeyTracker(canvas);
       let player1 = new Player("Player 1", 5, 5, 5, keyTracker);
-      let player2 = new Player("Player 2", 5, 55, 50, keyTracker);
+      let player2 = new Player("Player 2", 5, 20, 15, keyTracker);
       var players = [player1, player2];
 
       player2.eatPlayer(players); // should not eat player 1 at this point
@@ -38,10 +36,6 @@ describe('Players eat each other or not', function(){
       assert(players.includes(player1));
 
       keyTracker.keyPressed[83] = true;
-      player1.move();
-      player1.move();
-      player1.move();
-      player1.move();
       player1.move();
       player2.eatPlayer(players);
 
@@ -55,15 +49,13 @@ describe('Players eat each other or not', function(){
       var canvas = { width: 500, height: 500 };
       var keyTracker = new KeyTracker(canvas);
       let player1 = new Player("Player 1", 5, 5, 10, keyTracker);
-      let player2 = new Player("Player 2", 5, 25, 9, keyTracker);
+      let player2 = new Player("Player 2", 5, 15, 9, keyTracker);
       var players = [player1, player2];
 
       assert.equal(players.length, 2);
       assert(players.includes(player2));
 
       keyTracker.keyPressed[83] = true;
-      player1.move();
-      player1.move();
       player1.move();
       player1.eatPlayer(players);
 

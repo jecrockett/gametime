@@ -6,6 +6,7 @@ var statusMessage = document.getElementById('status');
 var keysPressed = {};
 this.onkeydown = function(event) {
     keysPressed[event.keyCode] = true;
+      console.log(keysPressed);
     socket.send('keysPressed', keysPressed);
 };
 this.onkeyup = function(event) {

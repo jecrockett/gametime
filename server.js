@@ -53,7 +53,7 @@ function socketHandshake(socket) {
 
 
   socket.on('message', function(channel, message){
-    if (channel === 'keyDown') {
+    if (channel === 'keysPressed') {
       var player = findPlayer(socket.id);
       player.move(message);
       player.eatFood.call(player, food);

@@ -14,21 +14,21 @@ function OnlinePlayer(id, name, x, y) {
   this.moveRight = this.movePlayer.bind(this, 1, 0);
   this.moveUp = this.movePlayer.bind(this, 0, -1);
   this.moveDown = this.movePlayer.bind(this, 0, 1);
-};
+}
 
 OnlinePlayer.prototype = {
   move: function(keysPressed) {
     console.log(keysPressed, typeof keysPressed);
-    if ((keysPressed.indexOf(65) > -1) && this.canMoveLeft()) {
+    if (keysPressed[65] && this.canMoveLeft()) {
       this.moveLeft();
     }
-    if ((keysPressed.indexOf(68) > -1) && this.canMoveRight()) {
+    if (keysPressed[68] && this.canMoveRight()) {
       this.moveRight();
     }
-    if ((keysPressed.indexOf(83) > -1) && this.canMoveDown()) {
+    if (keysPressed[83] && this.canMoveDown()) {
       this.moveDown();
     }
-    if ((keysPressed.indexOf(87) > -1) && this.canMoveUp()) {
+    if (keysPressed[87] && this.canMoveUp()) {
       this.moveUp();
     }
   },

@@ -32,14 +32,19 @@ ShapeDrawer.prototype = {
 var shapeDrawer = new ShapeDrawer(canvas, ctx);
 
 var gameState = {};
+var keysPressed = {};
 
 
 //////////Listener/Send//////////
 this.onkeydown = function(event) {
     if([65, 68, 83, 87].includes(event.keyCode)){
-      var keysPressed = [];
-      keysPressed.push(event.keyCode);
-      socket.send('keyDown', keysPressed);
+      keysPressed[event.keyCode] = true;
+    }
+};
+
+this.onkeyup = function(event) {
+    if([65, 68, 83, 87].includes(event.keyCode)){
+      keysPressed[event.keyCode] = false;
     }
 };
 //////////////////////////////
@@ -62,6 +67,7 @@ socket.on('gameState', function(newState) {
 
 //////////Game Loop//////////
 function gameLoop() {
+  socket.send('keysPressed', keysPressed);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if(typeof gameState.players !== "undefined"){
 
@@ -72,9 +78,6 @@ function gameLoop() {
     for(var i = 0; i < gameState.food.length; i++) {
       shapeDrawer.drawFood(gameState.food[i]);
     }
-
-
-
   }
   requestAnimationFrame(gameLoop);
   };

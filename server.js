@@ -13,7 +13,8 @@ const HTTP = require('http').Server(APP).listen(PORT, function() {
 const IO = require('socket.io')(HTTP);
 
 var players = [];
-var food = [];
+var food    = [];
+var boosts  = [];
 
 APP.use(EXPRESS.static('public'));
 APP.get('/', function(req, res) {
@@ -23,8 +24,8 @@ APP.get('/', function(req, res) {
 IO.on('connection', socketHandshake);
 
 function gameLoop() {
-  foodGen.replaceFood(food);
-  var gameState = gamePackager.buildGameState(players, food);
+  foodGen.replaceFood(food, boosts);
+  var gameState = gamePackager.buildGameState(players, food, boosts);
   IO.sockets.emit('gameState', gameState);
 }
 
@@ -42,7 +43,8 @@ function findPlayer(socketID) {
 function socketHandshake(socket) {
   var numOfPlayers = players.length;
   if(numOfPlayers === 0) {
-    food = foodGen.seed();
+    food = foodGen.seedFood();
+    boosts = foodGen.seedSpeedBoosts();
   }
   var player_name = ("Player " + (numOfPlayers + 1));
   players.push(new OnlinePlayer(socket.id, player_name, (numOfPlayers * 5), (numOfPlayers * 5)));
@@ -55,8 +57,13 @@ function socketHandshake(socket) {
   socket.on('message', function(channel, message){
     if (channel === 'keysPressed') {
       var player = findPlayer(socket.id);
+      player.resetBoosts();
       player.move(message);
       player.eatFood.call(player, food);
+      player.eatBoosts.call(player, boosts);
+      if(player.length > 0){
+        player.eatPlayer.call(players);
+      }
     }
   });
 

@@ -15,6 +15,7 @@ ShapeDrawer.prototype = {
   drawFood: function(food) {
     this.context.beginPath();
     this.context.arc(food.x, food.y, 5, 0, Math.PI * 2);
+    this.context.fillStyle = food.color;
     this.context.fill();
     return this;
   },
@@ -22,6 +23,7 @@ ShapeDrawer.prototype = {
   drawPlayer: function(player) {
     this.context.beginPath();
     this.context.arc(player.x, player.y, player.mass, 0, Math.PI * 2);
+    this.context.fillStyle = 'royalblue';
     this.context.fill();
     return player;
   }
@@ -75,12 +77,17 @@ function gameLoop() {
       shapeDrawer.drawPlayer(gameState.players[i]);
     }
 
-    for(var i = 0; i < gameState.food.length; i++) {
-      shapeDrawer.drawFood(gameState.food[i]);
+    for(var j = 0; j < gameState.food.length; j++) {
+      shapeDrawer.drawFood(gameState.food[j]);
     }
+
+    for(var k = 0; k < gameState.boosts.length; k++) {
+      shapeDrawer.drawFood(gameState.boosts[k]);
+    }
+
   }
   requestAnimationFrame(gameLoop);
-  };
+}
 
 requestAnimationFrame(gameLoop);
 //////////////////////////////

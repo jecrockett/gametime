@@ -1,5 +1,7 @@
 var OnlinePlayer = require('./public/online-player');
 var GamePackager = require('./lib/game-packager');
+var gamePackager = new GamePackager();
+
 const EXPRESS = require('express');
 const APP = EXPRESS();
 const PORT = process.env.PORT || 8181;
@@ -11,32 +13,18 @@ const IO = require('socket.io')(HTTP);
 var players = [];
 
 APP.use(EXPRESS.static('public'));
-
 APP.get('/', function(req, res) {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-IO.on('connection', function(socket) {
-  var numOfPlayers = Object.keys(players).length;
-  var player_name = ("Player " + (numOfPlayers + 1));
-  players.push(new OnlinePlayer(socket.id, player_name, (numOfPlayers * 5), (numOfPlayers * 5)));
+IO.on('connection', socketHandshake);
 
-  console.log('A user has connected.', IO.engine.clientsCount);
-  IO.sockets.emit('usersConnected', IO.engine.clientsCount);
-  socket.emit('status', 'You are connected!');
+function gameLoop() {
+  var gameState = gamePackager.buildGameState(players);
+  IO.sockets.emit('gameState', gameState);
+}
 
-
-  socket.on('message', function(channel, message){
-    if (channel === 'keysPressed') {
-      var player = findPlayer(socket.id);
-      player.move(message);
-    }
-  });
-
-  socket.on('disconnect', function(socket) {
-    console.log('A user has disconnected.', IO.engine.clientsCount);
-  });
-});
+setInterval(gameLoop, 16);
 
 
 function findPlayer(socketID) {
@@ -47,10 +35,24 @@ function findPlayer(socketID) {
   }
 }
 
-function gameLoop() {
-  var gameState = new GamePackager(players);
-  console.log(gameState);
-  IO.sockets.emit('gameState', gameState);
-}
+function socketHandshake(socket) {
+  var numOfPlayers = players.length;
+  var player_name = ("Player " + (numOfPlayers + 1));
+  players.push(new OnlinePlayer(socket.id, player_name, (numOfPlayers * 5), (numOfPlayers * 5)));
 
-setInterval(gameLoop, 16);
+  console.log('A user has connected.', IO.engine.clientsCount);
+  IO.sockets.emit('usersConnected', IO.engine.clientsCount);
+  socket.emit('status', 'You are connected!');
+
+
+  socket.on('message', function(channel, message){
+    if (channel === 'keyDown') {
+      var player = findPlayer(socket.id);
+      player.move(message);
+    }
+  });
+
+  socket.on('disconnect', function(socket) {
+    console.log('A user has disconnected.', IO.engine.clientsCount);
+  });
+}

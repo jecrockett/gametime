@@ -1,10 +1,11 @@
 var socket = io.connect();
-var gameState = {};
 var canvas = document.getElementById('game');
 var ctx = canvas.getContext('2d');
 var connectionCount = document.getElementById('connected-users-count');
 var statusMessage = document.getElementById('status');
-// var ShapeDrawer = require('../lib/shape-drawer');
+
+
+//////////Draw Class//////////
 function ShapeDrawer(canvas, context) {
   this.canvas = canvas;
   this.context = context;
@@ -25,8 +26,15 @@ ShapeDrawer.prototype = {
     return player;
   }
 };
+//////////////////////////////
+
+
 var shapeDrawer = new ShapeDrawer(canvas, ctx);
 
+var gameState = {};
+
+
+//////////Listener/Send//////////
 this.onkeydown = function(event) {
     if([65, 68, 83, 87].includes(event.keyCode)){
       var keysPressed = [];
@@ -34,7 +42,10 @@ this.onkeydown = function(event) {
       socket.send('keyDown', keysPressed);
     }
 };
+//////////////////////////////
 
+
+//////////Receive/Process//////////
 socket.on('usersConnected', function(count) {
   connectionCount.innerText = count + ' users connected.';
 });
@@ -46,24 +57,23 @@ socket.on('status', function(message) {
 socket.on('gameState', function(newState) {
   gameState = newState;
 });
+//////////////////////////////
 
-function gameLoop(gameState) {
+
+// foodGen.replaceFood(food);
+
+//////////Game Loop//////////
+function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if(typeof gameState.players !== "undefined"){
 
-  // for(var j = 0; j < gameState[food].length; j++) {
-  //   shapeDrawer.drawFood(food[j]);
-  // }
-
-  console.log('$$$$$$$$$$' + gameState);
-  if (gameState[gameState] !== undefined) {
-
-    for(var i = 0; i < gameState['gameState']['players'].length; i++) {
-      shapeDrawer.drawPlayer(gameState['gameState']['players'][i]).move();
-      // gameState['players'][i].eatFood.call(gameState['players'][i], food);
+    for(var i = 0; i < gameState.players.length; i++) {
+      shapeDrawer.drawPlayer(gameState.players[i]);
     }
-  }
-  // foodGen.replaceFood(food);
-  requestAnimationFrame(gameLoop(gameState));
-}
 
-requestAnimationFrame(gameLoop(gameState));
+  }
+  window.requestAnimationFrame(gameLoop);
+  };
+
+window.requestAnimationFrame(gameLoop);
+//////////////////////////////

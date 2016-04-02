@@ -61,8 +61,8 @@ function socketHandshake(socket) {
       player.move(message);
       player.eatFood.call(player, food);
       player.eatBoosts.call(player, boosts);
-      if(player.length > 0){
-        player.eatPlayer.call(players);
+      if(players.length > 0){
+        player.eatPlayer(players);
       }
     }
   });

@@ -60,8 +60,6 @@ socket.on('gameState', function(newState) {
 //////////////////////////////
 
 
-// foodGen.replaceFood(food);
-
 //////////Game Loop//////////
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -70,6 +68,12 @@ function gameLoop() {
     for(var i = 0; i < gameState.players.length; i++) {
       shapeDrawer.drawPlayer(gameState.players[i]);
     }
+
+    for(var i = 0; i < gameState.food.length; i++) {
+      shapeDrawer.drawFood(gameState.food[i]);
+    }
+
+
 
   }
   requestAnimationFrame(gameLoop);

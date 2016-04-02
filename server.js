@@ -1,6 +1,8 @@
 var OnlinePlayer = require('./public/online-player');
 var GamePackager = require('./lib/game-packager');
+var FoodGenerator = require('./lib/food-generator');
 var gamePackager = new GamePackager();
+var foodGen = new FoodGenerator(1140, 560);
 
 const EXPRESS = require('express');
 const APP = EXPRESS();
@@ -11,6 +13,7 @@ const HTTP = require('http').Server(APP).listen(PORT, function() {
 const IO = require('socket.io')(HTTP);
 
 var players = [];
+var food = [];
 
 APP.use(EXPRESS.static('public'));
 APP.get('/', function(req, res) {
@@ -20,7 +23,8 @@ APP.get('/', function(req, res) {
 IO.on('connection', socketHandshake);
 
 function gameLoop() {
-  var gameState = gamePackager.buildGameState(players);
+  foodGen.replaceFood(food);
+  var gameState = gamePackager.buildGameState(players, food);
   IO.sockets.emit('gameState', gameState);
 }
 
@@ -37,6 +41,9 @@ function findPlayer(socketID) {
 
 function socketHandshake(socket) {
   var numOfPlayers = players.length;
+  if(numOfPlayers === 0) {
+    food = foodGen.seed();
+  }
   var player_name = ("Player " + (numOfPlayers + 1));
   players.push(new OnlinePlayer(socket.id, player_name, (numOfPlayers * 5), (numOfPlayers * 5)));
 
@@ -49,6 +56,7 @@ function socketHandshake(socket) {
     if (channel === 'keyDown') {
       var player = findPlayer(socket.id);
       player.move(message);
+      player.eatFood.call(player, food);
     }
   });
 

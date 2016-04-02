@@ -8,7 +8,7 @@ const HTTP = require('http').Server(APP).listen(PORT, function() {
 });
 const IO = require('socket.io')(HTTP);
 
-var players = {};
+var players = [];
 
 APP.use(EXPRESS.static('public'));
 
@@ -19,34 +19,38 @@ APP.get('/', function(req, res) {
 IO.on('connection', function(socket) {
   var numOfPlayers = Object.keys(players).length;
   var player_name = ("Player " + (numOfPlayers + 1));
-  players[socket.id] = new OnlinePlayer(socket.id, player_name, (numOfPlayers * 5), (numOfPlayers * 5));
+  players.push(new OnlinePlayer(socket.id, player_name, (numOfPlayers * 5), (numOfPlayers * 5)));
+
   console.log('A user has connected.', IO.engine.clientsCount);
   IO.sockets.emit('usersConnected', IO.engine.clientsCount);
   socket.emit('status', 'You are connected!');
 
 
   socket.on('message', function(channel, message){
-    if (channel === 'keyDown') {
+    if (channel === 'keysPressed') {
       var player = findPlayer(socket.id);
       player.move(message);
-      console.log(player.name, player.x, player.y);
     }
   });
 
   socket.on('disconnect', function(socket) {
     console.log('A user has disconnected.', IO.engine.clientsCount);
   });
-
-  var gameState = new GamePackager(players);
-
-
 });
 
 
 function findPlayer(socketID) {
   for(var i = 0; i < Object.keys(players).length; i++) {
-    if (players[socketID].id === socketID) {
-      return players[socketID];
+    if (players[i].id === socketID) {
+      return players[i];
     }
   }
 }
+
+function gameLoop() {
+  var gameState = new GamePackager(players);
+  console.log(gameState);
+  IO.sockets.emit('gameState', gameState);
+}
+
+setInterval(gameLoop, 16);

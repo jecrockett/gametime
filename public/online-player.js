@@ -65,15 +65,23 @@ OnlinePlayer.prototype = {
     }
   },
 
+  resetPlayer: function(){
+    this.mass  = 5;
+    this.x     = Math.floor((Math.random() * 1140) + 5);
+    this.y     = Math.floor((Math.random() * 560) + 5);
+    this.speed = 5;
+    this.speedBoostTime = null;
+  },
+
   eatPlayer: function(players){
     for(var i = 0; i < players.length; i++) {
       var xDiff = this.x - players[i].x;
       var yDiff = this.y - players[i].y;
       var distance = Math.sqrt( xDiff*xDiff + yDiff*yDiff);
-      if((distance < this.mass * 0.8) &&
+      if((this.mass > (distance + players[i].mass * 0.5)) &&
          (players[i] !== this) &&
-         (this.mass * 0.8 > players[i].mass)) {
-           players.splice(i, 1);
+         (this.mass * 0.8 > players[i].mass)){
+           players[i].resetPlayer();
       }
     }
   },

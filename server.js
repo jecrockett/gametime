@@ -28,7 +28,7 @@ setInterval(gameLoop, 16);
 
 
 function findPlayer(socketID) {
-  for(var i = 0; i < Object.keys(players).length; i++) {
+  for(var i = 0; i < players.length; i++) {
     if (players[i].id === socketID) {
       return players[i];
     }
@@ -52,7 +52,16 @@ function socketHandshake(socket) {
     }
   });
 
-  socket.on('disconnect', function(socket) {
+  socket.on('disconnect', function() {
+    deletePlayer(socket.id);
     console.log('A user has disconnected.', IO.engine.clientsCount);
   });
+}
+
+function deletePlayer(socketID) {
+  for(var i = 0; i < players.length; i++) {
+    if (players[i].id === socketID) {
+      players = players.splice(i, 1);
+    }
+  }
 }

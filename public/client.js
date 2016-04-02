@@ -72,8 +72,8 @@ function gameLoop() {
     }
 
   }
-  window.requestAnimationFrame(gameLoop);
+  requestAnimationFrame(gameLoop);
   };
 
-window.requestAnimationFrame(gameLoop);
+requestAnimationFrame(gameLoop);
 //////////////////////////////

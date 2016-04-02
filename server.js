@@ -29,7 +29,7 @@ function gameLoop() {
   IO.sockets.emit('gameState', gameState);
 }
 
-setInterval(gameLoop, 16);
+setInterval(gameLoop, 10);
 
 
 function findPlayer(socketID) {

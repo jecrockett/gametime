@@ -1,11 +1,12 @@
-function Player(name, x, y, keyTracker) {
+function OnlinePlayer(id, name, x, y) {
+  this.id   = id;
   this.name = name;
   this.x    = x;
   this.y    = y;
   this.mass = 5;
   this.speed = 5;
-  this.keyTracker = keyTracker;
   this.speedBoostTime = null;
+
   this.movePlayer = function(xOffset, yOffset) {
     if (this.speedBoostTime !== null) {
       this.x += xOffset * (this.speed * 2);
@@ -22,11 +23,21 @@ function Player(name, x, y, keyTracker) {
   this.moveDown = this.movePlayer.bind(this, 0, 1);
 }
 
-Player.prototype = {
-  move: function() {
-    this.movePlayer1(this.speed);
-    this.movePlayer2(this.speed);
-    return this;
+OnlinePlayer.prototype = {
+  move: function(keysPressed) {
+    console.log(keysPressed, typeof keysPressed);
+    if (keysPressed[65] && this.canMoveLeft()) {
+      this.moveLeft();
+    }
+    if (keysPressed[68] && this.canMoveRight()) {
+      this.moveRight();
+    }
+    if (keysPressed[83] && this.canMoveDown()) {
+      this.moveDown();
+    }
+    if (keysPressed[87] && this.canMoveUp()) {
+      this.moveUp();
+    }
   },
 
   eatFood: function(food) {
@@ -67,10 +78,27 @@ Player.prototype = {
     }
   },
 
-  resetSpeedBoost: function() {
+
+  resetBoosts: function() {
     if(this.speedBoostTime < (Date.now() - 1200)) {
       this.speedBoostTime = null;
     }
+  },
+
+  canMoveLeft: function(){
+    return (this.x-this.mass > 0);
+  },
+
+  canMoveRight: function(){
+    return (this.x+this.mass < 1140);
+  },
+
+  canMoveUp: function(){
+    return (this.y-this.mass > 0);
+  },
+
+  canMoveDown: function(){
+    return (this.y+this.mass < 560);
   },
 
   movePlayer1: function() {
@@ -136,4 +164,4 @@ Player.prototype = {
   }
 };
 
-module.exports = Player;
+module.exports = OnlinePlayer;

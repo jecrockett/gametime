@@ -1,9 +1,14 @@
 var socket = io.connect();
 var canvas = document.getElementById('game');
 var ctx = canvas.getContext('2d');
+var renderingCanvas = document.createElement('canvas');
+var renderingContext = renderingCanvas.getContext('2d');
 var connectionCount = document.getElementById('connected-users-count');
 var statusMessage = document.getElementById('status');
+renderingCanvas.setAttribute('width', '3000px');
+renderingCanvas.setAttribute('height', '3000px');
 
+// ctx.scale(5, 5);
 
 //////////Draw Class//////////
 function ShapeDrawer(canvas, context) {
@@ -31,7 +36,7 @@ ShapeDrawer.prototype = {
 //////////////////////////////
 
 
-var shapeDrawer = new ShapeDrawer(canvas, ctx);
+var shapeDrawer = new ShapeDrawer(renderingCanvas, renderingContext);
 
 var gameState = {};
 var keysPressed = {};
@@ -64,12 +69,18 @@ socket.on('status', function(message) {
 socket.on('gameState', function(newState) {
   gameState = newState;
 });
+
+
+socket.on('connect', function() {
+  requestAnimationFrame(gameLoop);
+});
 //////////////////////////////
 
 
 //////////Game Loop//////////
 function gameLoop() {
   socket.send('keysPressed', keysPressed);
+  renderingContext.clearRect(0, 0, renderingCanvas.width, renderingCanvas.height);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if(typeof gameState.players !== "undefined"){
 
@@ -84,10 +95,24 @@ function gameLoop() {
     for(var k = 0; k < gameState.boosts.length; k++) {
       shapeDrawer.drawFood(gameState.boosts[k]);
     }
+    currentPlayer = findPlayer(socket.id);
+  
 
+    if(typeof currentPlayer !== 'undefined') {
+      // ctx.drawImage(renderingCanvas, (currentPlayer.x - 250)/6, (currentPlayer.y - 250)/6, 500, 500);
+      // ctx.drawImage(renderingCanvas, Math.max((currentPlayer.x - 250), 0), Math.max((currentPlayer.y - 250), 0), 500, 500, 0, 0, 500, 500);
+      ctx.drawImage(renderingCanvas, Math.min((Math.max((currentPlayer.x - 250), 0)), (Math.min((currentPlayer.x + 250), 2500))), Math.min((Math.max((currentPlayer.y - 250), 0)), (Math.min((currentPlayer.y + 250), 2500))), 500, 500, 0, 0, 500, 500);
+    }
   }
   requestAnimationFrame(gameLoop);
 }
 
-requestAnimationFrame(gameLoop);
 //////////////////////////////
+
+function findPlayer(socketID) {
+  for(var i = 0; i < gameState.players.length; i++) {
+    if (gameState.players[i].id.substring(2) === socketID) {
+      return gameState.players[i];
+    }
+  }
+}

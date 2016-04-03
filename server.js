@@ -2,7 +2,7 @@ var OnlinePlayer = require('./public/online-player');
 var GamePackager = require('./lib/game-packager');
 var FoodGenerator = require('./lib/food-generator');
 var gamePackager = new GamePackager();
-var foodGen = new FoodGenerator(1140, 560);
+var foodGen = new FoodGenerator(3000, 3000);
 
 const EXPRESS = require('express');
 const APP = EXPRESS();

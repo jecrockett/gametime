@@ -67,8 +67,8 @@ OnlinePlayer.prototype = {
 
   resetPlayer: function(){
     this.mass  = 5;
-    this.x     = Math.floor((Math.random() * 1140) + 5);
-    this.y     = Math.floor((Math.random() * 560) + 5);
+    this.x     = Math.floor((Math.random() * 3000) + 5);
+    this.y     = Math.floor((Math.random() * 3000) + 5);
     this.speed = 5;
     this.speedBoostTime = null;
   },
@@ -98,7 +98,7 @@ OnlinePlayer.prototype = {
   },
 
   canMoveRight: function(){
-    return (this.x+this.mass < 1140);
+    return (this.x+this.mass < 3000);
   },
 
   canMoveUp: function(){
@@ -106,7 +106,7 @@ OnlinePlayer.prototype = {
   },
 
   canMoveDown: function(){
-    return (this.y+this.mass < 560);
+    return (this.y+this.mass < 3000);
   },
 
   movePlayer1: function() {

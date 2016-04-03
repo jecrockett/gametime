@@ -5,10 +5,14 @@ var renderingCanvas = document.createElement('canvas');
 var renderingContext = renderingCanvas.getContext('2d');
 var connectionCount = document.getElementById('connected-users-count');
 var statusMessage = document.getElementById('status');
-renderingCanvas.setAttribute('width', '3000px');
-renderingCanvas.setAttribute('height', '3000px');
+var zoomLevel = 1.0;
+renderingCanvas.setAttribute('width', z(3000) + "px");
+renderingCanvas.setAttribute('height', z(3000) + "px");
 
-// ctx.scale(5, 5);
+
+function calcZoomLevel(currentPlayer) {
+
+}
 
 //////////Draw Class//////////
 function ShapeDrawer(canvas, context) {
@@ -19,7 +23,7 @@ function ShapeDrawer(canvas, context) {
 ShapeDrawer.prototype = {
   drawFood: function(food) {
     this.context.beginPath();
-    this.context.arc(food.x, food.y, 5, 0, Math.PI * 2);
+    this.context.arc(z(food.x), z(food.y), z(5), 0, Math.PI * 2);
     this.context.fillStyle = food.color;
     this.context.fill();
     return this;
@@ -27,7 +31,7 @@ ShapeDrawer.prototype = {
 
   drawPlayer: function(player) {
     this.context.beginPath();
-    this.context.arc(player.x, player.y, player.mass, 0, Math.PI * 2);
+    this.context.arc(z(player.x), z(player.y), z(player.mass), 0, Math.PI * 2);
     this.context.fillStyle = 'royalblue';
     this.context.fill();
     return player;
@@ -79,8 +83,14 @@ socket.on('connect', function() {
 
 //////////Game Loop//////////
 function gameLoop() {
+  currentPlayer = findPlayer(socket.id);
+  zoomLevel = 1.0 - (currentPlayer.mass / 200);
+
+  renderingCanvas.setAttribute('width', z(3000) + "px");
+  renderingCanvas.setAttribute('height', z(3000) + "px");
+
   socket.send('keysPressed', keysPressed);
-  renderingContext.clearRect(0, 0, renderingCanvas.width, renderingCanvas.height);
+  renderingContext.clearRect(0, 0, z(renderingCanvas.width), z(renderingCanvas.height));
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if(typeof gameState.players !== "undefined"){
 
@@ -95,13 +105,16 @@ function gameLoop() {
     for(var k = 0; k < gameState.boosts.length; k++) {
       shapeDrawer.drawFood(gameState.boosts[k]);
     }
-    currentPlayer = findPlayer(socket.id);
   
 
     if(typeof currentPlayer !== 'undefined') {
-      // ctx.drawImage(renderingCanvas, (currentPlayer.x - 250)/6, (currentPlayer.y - 250)/6, 500, 500);
-      // ctx.drawImage(renderingCanvas, Math.max((currentPlayer.x - 250), 0), Math.max((currentPlayer.y - 250), 0), 500, 500, 0, 0, 500, 500);
-      ctx.drawImage(renderingCanvas, Math.min((Math.max((currentPlayer.x - 250), 0)), (Math.min((currentPlayer.x + 250), 2500))), Math.min((Math.max((currentPlayer.y - 250), 0)), (Math.min((currentPlayer.y + 250), 2500))), 500, 500, 0, 0, 500, 500);
+      
+      //Best Line of Code in History...Ever.
+      //ctx.drawImage(renderingCanvas, z(Math.min((Math.max((currentPlayer.x - 250), 0)), (Math.min((currentPlayer.x + 250), 2500)))), z(Math.min((Math.max((currentPlayer.y - 250), 0)), (Math.min((currentPlayer.y + 250), 2500)))), z(500), z(500), 0, 0, 500, 500);
+      //Best Line of Code in History...Ever.
+      var img = renderingContext.getImageData(z(Math.min((Math.max((currentPlayer.x - (250/zoomLevel)), 0)), (Math.min((currentPlayer.x + (250/zoomLevel)), z(2500))))), z(Math.min((Math.max((currentPlayer.y - (250/zoomLevel)), 0)), (Math.min((currentPlayer.y + (250/zoomLevel)), z(2500))))), 500/zoomLevel, 500/zoomLevel);
+      ctx.putImageData(img, 0, 0);
+
     }
   }
   requestAnimationFrame(gameLoop);
@@ -116,3 +129,8 @@ function findPlayer(socketID) {
     }
   }
 }
+
+//Zoom level
+function z(value) {
+  return value * zoomLevel;
+};

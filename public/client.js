@@ -84,7 +84,7 @@ socket.on('connect', function() {
 //////////Game Loop//////////
 function gameLoop() {
   currentPlayer = findPlayer(socket.id);
-  zoomLevel = 1.0 - (currentPlayer.mass / 200);
+  zoomLevel = 1.0 - (currentPlayer.mass / 450);
 
   renderingCanvas.setAttribute('width', z(3000) + "px");
   renderingCanvas.setAttribute('height', z(3000) + "px");

@@ -1,8 +1,8 @@
 function OnlinePlayer(id, name, x, y) {
   this.id   = id;
   this.name = name;
-  this.x    = 2500;
-  this.y    = 2500;
+  this.x    = 5;
+  this.y    = 5;
   this.mass = 5;
   this.speed = 5;
   this.speedBoostTime = null;
@@ -94,19 +94,19 @@ OnlinePlayer.prototype = {
   },
 
   canMoveLeft: function(){
-    return (this.x-this.mass > 0);
+    return (this.x - this.mass > 0);
   },
 
   canMoveRight: function(){
-    return (this.x+this.mass < 3000);
+    return (this.x + this.mass < 3000);
   },
 
   canMoveUp: function(){
-    return (this.y-this.mass > 0);
+    return (this.y - this.mass > 0);
   },
 
   canMoveDown: function(){
-    return (this.y+this.mass < 3000);
+    return (this.y + this.mass < 3000);
   },
 
   movePlayer1: function() {

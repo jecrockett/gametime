@@ -1,16 +1,30 @@
+//Socket
+////////////////////////////////////////////////////////////
 var socket = io.connect();
-var canvas = document.getElementById('game');
-var ctx = canvas.getContext('2d');
+////////////////////////////////////////////////////////////
+
+//Main 'Rendering' Canvas - Holds True Game State
+////////////////////////////////////////////////////////////
 var renderingCanvas = document.createElement('canvas');
 var renderingContext = renderingCanvas.getContext('2d');
-var connectionCount = document.getElementById('connected-users-count');
-var statusMessage = document.getElementById('status');
-var zoomLevel = 1.0;
 renderingCanvas.setAttribute('width', z(3000) + "px");
 renderingCanvas.setAttribute('height', z(3000) + "px");
+////////////////////////////////////////////////////////////
 
+//'View Window' Canvas
+////////////////////////////////////////////////////////////
+var canvas = document.getElementById('game');
+var ctx = canvas.getContext('2d');
+////////////////////////////////////////////////////////////
 
-//////////Draw Class//////////
+//Connection/Status
+////////////////////////////////////////////////////////////
+var connectionCount = document.getElementById('connected-users-count');
+var statusMessage = document.getElementById('status');
+////////////////////////////////////////////////////////////
+
+//Draw Class
+////////////////////////////////////////////////////////////
 function ShapeDrawer(canvas, context) {
   this.canvas = canvas;
   this.context = context;
@@ -33,16 +47,17 @@ ShapeDrawer.prototype = {
     return player;
   }
 };
-//////////////////////////////
+////////////////////////////////////////////////////////////
 
 
 var shapeDrawer = new ShapeDrawer(renderingCanvas, renderingContext);
-
+var zoomLevel = 1.0;
 var gameState = {};
 var keysPressed = {};
 
 
-//////////Listener/Send//////////
+//Key Press Listeners
+////////////////////////////////////////////////////////////
 this.onkeydown = function(event) {
     if([65, 68, 83, 87].includes(event.keyCode)){
       keysPressed[event.keyCode] = true;
@@ -54,10 +69,11 @@ this.onkeyup = function(event) {
       keysPressed[event.keyCode] = false;
     }
 };
-//////////////////////////////
+////////////////////////////////////////////////////////////
 
 
-//////////Receive/Process//////////
+//Receive From Server & Process 
+////////////////////////////////////////////////////////////
 socket.on('usersConnected', function(count) {
   connectionCount.innerText = count + ' users connected.';
 });
@@ -74,36 +90,35 @@ socket.on('gameState', function(newState) {
 socket.on('connect', function() {
   requestAnimationFrame(gameLoop);
 });
-//////////////////////////////
+////////////////////////////////////////////////////////////
 
 
-//////////Game Loop//////////
+//Game Loop
+////////////////////////////////////////////////////////////
 function gameLoop() {
   currentPlayer = findPlayer(socket.id);
-  console.log("x: "+currentPlayer.x + ", y: " + currentPlayer.y);
+  
   zoomLevel = 1.0 - (currentPlayer.mass / 450);
-
   renderingCanvas.setAttribute('width', z(3000) + "px");
   renderingCanvas.setAttribute('height', z(3000) + "px");
 
-  socket.send('keysPressed', keysPressed);
   renderingContext.clearRect(0, 0, z(renderingCanvas.width), z(renderingCanvas.height));
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if(typeof gameState.players !== "undefined"){
 
+  socket.send('keysPressed', keysPressed);
+
+  if(typeof gameState.players !== "undefined"){
     for(var i = 0; i < gameState.players.length; i++) {
       shapeDrawer.drawPlayer(gameState.players[i]);
     }
-
     for(var j = 0; j < gameState.food.length; j++) {
       shapeDrawer.drawFood(gameState.food[j]);
     }
-
     for(var k = 0; k < gameState.boosts.length; k++) {
       shapeDrawer.drawFood(gameState.boosts[k]);
     }
-  
-    //////////Define 'View Window' Start Point (Top Left Corner)//////////
+    //Define 'View Window' Start Point (Top Left Corner)
+    ////////////////////////////////////////////////////////////
     if(typeof currentPlayer !== 'undefined') {
       var topLeftX = z(currentPlayer.x) - 250;
       var topLeftY = z(currentPlayer.y) - 250;
@@ -123,12 +138,17 @@ function gameLoop() {
       var img = renderingContext.getImageData(topLeftX, topLeftY, 500, 500);
       ctx.putImageData(img, 0, 0);
     }
-    //////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
   }
   requestAnimationFrame(gameLoop);
 }
-//////////////////////////////
+////////////////////////////////////////////////////////////
 
+
+
+
+//Find a Player by socketID
+////////////////////////////////////////////////////////////
 function findPlayer(socketID) {
   for(var i = 0; i < gameState.players.length; i++) {
     if (gameState.players[i].id.substring(2) === socketID) {
@@ -136,8 +156,12 @@ function findPlayer(socketID) {
     }
   }
 }
+////////////////////////////////////////////////////////////
 
-//Scale a value with zoomLevel
+
+//Scale a Value With zoomLevel
+////////////////////////////////////////////////////////////
 function z(value) {
   return value * zoomLevel;
 };
+////////////////////////////////////////////////////////////

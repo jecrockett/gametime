@@ -135,8 +135,7 @@ function gameLoop() {
         topLeftY = z(3000) - 500;
       }
 
-      var img = renderingContext.getImageData(topLeftX, topLeftY, 500, 500);
-      ctx.putImageData(img, 0, 0);
+      ctx.drawImage(renderingCanvas, topLeftX, topLeftY, 500, 500, 0, 0, 500, 500);
     }
     ////////////////////////////////////////////////////////////
   }

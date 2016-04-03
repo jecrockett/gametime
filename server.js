@@ -15,6 +15,7 @@ const IO = require('socket.io')(HTTP);
 var players = [];
 var food    = [];
 var boosts  = [];
+var playersToDelete = [];
 
 APP.use(EXPRESS.static('public'));
 APP.get('/', function(req, res) {
@@ -25,6 +26,10 @@ IO.on('connection', socketHandshake);
 
 function gameLoop() {
   foodGen.replaceFood(food, boosts);
+  for(var i = 0; i < playersToDelete.length; i++){
+    deletePlayer(playersToDelete[i]);
+  }
+  playersToDelete = [];
   var gameState = gamePackager.buildGameState(players, food, boosts);
   IO.sockets.emit('gameState', gameState);
 }
@@ -57,18 +62,20 @@ function socketHandshake(socket) {
   socket.on('message', function(channel, message){
     if (channel === 'keysPressed') {
       var player = findPlayer(socket.id);
-      player.resetBoosts();
-      player.move(message);
-      player.eatFood.call(player, food);
-      player.eatBoosts.call(player, boosts);
-      if(players.length > 0){
-        player.eatPlayer(players);
+      if(typeof player !== "undefined"){
+        player.resetBoosts();
+        player.move(message);
+        player.eatFood.call(player, food);
+        player.eatBoosts.call(player, boosts);
+        if(players.length > 0){
+          player.eatPlayer(players);
+        }
       }
     }
   });
 
   socket.on('disconnect', function() {
-    deletePlayer(socket.id);
+    playersToDelete.push(socket.id);
     console.log('A user has disconnected.', IO.engine.clientsCount);
   });
 }

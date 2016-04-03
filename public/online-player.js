@@ -1,8 +1,8 @@
 function OnlinePlayer(id, name, x, y) {
   this.id   = id;
   this.name = name;
-  this.x    = x;
-  this.y    = y;
+  this.x    = 2500;
+  this.y    = 2500;
   this.mass = 5;
   this.speed = 5;
   this.speedBoostTime = null;

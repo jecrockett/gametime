@@ -10,8 +10,8 @@ var socket = io.connect();
 ////////////////////////////////////////////////////////////
 var renderingCanvas = document.createElement('canvas');
 var renderingContext = renderingCanvas.getContext('2d');
-renderingCanvas.setAttribute('width', z(CANVAS_WIDTH) + "px");
-renderingCanvas.setAttribute('height', z(CANVAS_HEIGHT) + "px");
+renderingCanvas.setAttribute('width', zoom(CANVAS_WIDTH) + "px");
+renderingCanvas.setAttribute('height', zoom(CANVAS_HEIGHT) + "px");
 ////////////////////////////////////////////////////////////
 
 //'View Window' Canvas
@@ -36,7 +36,7 @@ function ShapeDrawer(canvas, context) {
 ShapeDrawer.prototype = {
   drawFood: function(food) {
     this.context.beginPath();
-    this.context.arc(z(food.x), z(food.y), z(5), 0, Math.PI * 2);
+    this.context.arc(zoom(food.x), zoom(food.y), zoom(5), 0, Math.PI * 2);
     this.context.fillStyle = food.color;
     this.context.fill();
     return this;
@@ -44,7 +44,7 @@ ShapeDrawer.prototype = {
 
   drawPlayer: function(player) {
     this.context.beginPath();
-    this.context.arc(z(player.x), z(player.y), z(player.mass), 0, Math.PI * 2);
+    this.context.arc(zoom(player.x), zoom(player.y), zoom(player.mass), 0, Math.PI * 2);
     this.context.fillStyle = 'royalblue';
     this.context.fill();
     return player;
@@ -109,10 +109,10 @@ function gameLoop() {
     currentPlayer = findPlayer(socket.id);
     
     zoomLevel = 1.0 - (currentPlayer.mass / 450);
-    renderingCanvas.setAttribute('width', z(CANVAS_WIDTH) + "px");
-    renderingCanvas.setAttribute('height', z(CANVAS_HEIGHT) + "px");
+    renderingCanvas.setAttribute('width', zoom(CANVAS_WIDTH) + "px");
+    renderingCanvas.setAttribute('height', zoom(CANVAS_HEIGHT) + "px");
 
-    renderingContext.clearRect(0, 0, z(renderingCanvas.width), z(renderingCanvas.height));
+    renderingContext.clearRect(0, 0, zoom(renderingCanvas.width), zoom(renderingCanvas.height));
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 
@@ -129,19 +129,19 @@ function gameLoop() {
       //Define 'View Window' Start Point (Top Left Corner)
       ////////////////////////////////////////////////////////////
       if(typeof currentPlayer !== 'undefined') {
-        var topLeftX = z(currentPlayer.x) - 250;
-        var topLeftY = z(currentPlayer.y) - 250;
+        var topLeftX = zoom(currentPlayer.x) - 250;
+        var topLeftY = zoom(currentPlayer.y) - 250;
 
         if (topLeftX < 0)
           topLeftX = 0;
         if (topLeftY < 0)
           topLeftY = 0;
         
-        if (topLeftX + 500 > z(CANVAS_WIDTH)) {
-          topLeftX = z(CANVAS_WIDTH) - 500;
+        if (topLeftX + 500 > zoom(CANVAS_WIDTH)) {
+          topLeftX = zoom(CANVAS_WIDTH) - 500;
         }
-        if (topLeftY + 500 > z(CANVAS_HEIGHT)) {
-          topLeftY = z(CANVAS_HEIGHT) - 500;
+        if (topLeftY + 500 > zoom(CANVAS_HEIGHT)) {
+          topLeftY = zoom(CANVAS_HEIGHT) - 500;
         }
 
         ctx.drawImage(renderingCanvas, topLeftX, topLeftY, 500, 500, 0, 0, 500, 500);
@@ -175,7 +175,7 @@ function findPlayer(socketID) {
 
 //Scale a Value With zoomLevel
 ////////////////////////////////////////////////////////////
-function z(value) {
+function zoom(value) {
   return value * zoomLevel;
 };
 ////////////////////////////////////////////////////////////

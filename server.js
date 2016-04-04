@@ -35,11 +35,10 @@ function gameLoop() {
   }
   playersToDelete = [];
   gameState = gamePackager.buildGameState(players, food, boosts);
-  IO.sockets.volatile.emit('gameState', gameState);
+  IO.sockets.emit('gameState', gameState);
 }
 
 setInterval(gameLoop, 45);
-
 
 function findPlayer(socketID) {
   for(var i = 0; i < players.length; i++) {
@@ -50,7 +49,7 @@ function findPlayer(socketID) {
 }
 
 function socketHandshake(socket) {
-  if(players.length === 0) {
+  if(IO.engine.clientsCount === 1) {
     food = foodGen.seedFood();
     boosts = foodGen.seedSpeedBoosts();
   }

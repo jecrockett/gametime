@@ -91,35 +91,8 @@ socket.on('gameState', function(newState) {
 
 socket.on('playerInitialized', function() {
   setInterval(socketLoop, 15);
-  requestAnimationFrame(animationLoop);
+  requestAnimationFrame(gameLoop);
 });
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-socket.on('error', function(o) {
-  console.log('error: ' + o);
-});
-
-socket.on('reconnect', function(o) {
-  console.log('reconnect: ' + o);
-});
-
-socket.on('reconnect_attempt', function(o) {
-  console.log('reconnect_attempt: ' + o);
-});
-
-socket.on('reconnect_error', function(o) {
-  console.log('reconnect_error: ' + o);
-});
-
-socket.on('reconnect_failed', function(o) {
-  console.log('reconnect_failed: ' + o);
-});
-
-socket.on('disconnect', function(o) {
-  console.log('disconnect: ' + o);
-});
-/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 ////////////////////////////////////////////////////////////
@@ -131,7 +104,7 @@ function socketLoop(){
   socket.send('keysPressed', keysPressed);
 };
 
-function animationLoop() {
+function gameLoop() {
   try {
     currentPlayer = findPlayer(socket.id);
     
@@ -178,14 +151,13 @@ function animationLoop() {
     
   }
   catch(ex){
-    console.log("exception hit", ex);    
+    console.log("exception hit: ", ex);    
   }
   finally {
-    requestAnimationFrame(animationLoop);
+    requestAnimationFrame(gameLoop);
   }
 }
 ////////////////////////////////////////////////////////////
-
 
 
 
@@ -207,3 +179,30 @@ function z(value) {
   return value * zoomLevel;
 };
 ////////////////////////////////////////////////////////////
+
+//Error Listeners
+/////////////////////////////////////////////////////////////////////////////////////////////////
+socket.on('error', function(o) {
+  console.log('error: ' + o);
+});
+
+socket.on('reconnect', function(o) {
+  console.log('reconnect: ' + o);
+});
+
+socket.on('reconnect_attempt', function(o) {
+  console.log('reconnect_attempt: ' + o);
+});
+
+socket.on('reconnect_error', function(o) {
+  console.log('reconnect_error: ' + o);
+});
+
+socket.on('reconnect_failed', function(o) {
+  console.log('reconnect_failed: ' + o);
+});
+
+socket.on('disconnect', function(o) {
+  console.log('disconnect: ' + o);
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////

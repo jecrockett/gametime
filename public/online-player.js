@@ -1,3 +1,6 @@
+var CANVAS_WIDTH = 2000;
+var CANVAS_HEIGHT = 2000;
+
 function OnlinePlayer(id, name, x, y) {
   this.id   = id;
   this.name = name;
@@ -25,7 +28,6 @@ function OnlinePlayer(id, name, x, y) {
 
 OnlinePlayer.prototype = {
   move: function(keysPressed) {
-    console.log(keysPressed, typeof keysPressed);
     if (keysPressed[65] && this.canMoveLeft()) {
       this.moveLeft();
     }
@@ -67,8 +69,8 @@ OnlinePlayer.prototype = {
 
   resetPlayer: function(){
     this.mass  = 5;
-    this.x     = Math.floor((Math.random() * 3000) + 5);
-    this.y     = Math.floor((Math.random() * 3000) + 5);
+    this.x     = Math.floor((Math.random() * CANVAS_WIDTH) + 5);
+    this.y     = Math.floor((Math.random() * CANVAS_HEIGHT) + 5);
     this.speed = 5;
     this.speedBoostTime = null;
   },
@@ -98,7 +100,7 @@ OnlinePlayer.prototype = {
   },
 
   canMoveRight: function(){
-    return (this.x + this.mass < 3000);
+    return (this.x + this.mass < CANVAS_WIDTH);
   },
 
   canMoveUp: function(){
@@ -106,7 +108,7 @@ OnlinePlayer.prototype = {
   },
 
   canMoveDown: function(){
-    return (this.y + this.mass < 3000);
+    return (this.y + this.mass < CANVAS_HEIGHT);
   },
 
   movePlayer1: function() {

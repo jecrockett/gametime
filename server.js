@@ -1,8 +1,11 @@
+var CANVAS_WIDTH = 2000;
+var CANVAS_HEIGHT = 2000;
+
 var OnlinePlayer = require('./public/online-player');
 var GamePackager = require('./lib/game-packager');
 var FoodGenerator = require('./lib/food-generator');
 var gamePackager = new GamePackager();
-var foodGen = new FoodGenerator(3000, 3000);
+var foodGen = new FoodGenerator(CANVAS_WIDTH, CANVAS_HEIGHT);
 
 const EXPRESS = require('express');
 const APP = EXPRESS();
@@ -16,6 +19,7 @@ var players = [];
 var food    = [];
 var boosts  = [];
 var playersToDelete = [];
+var gameState = null;
 
 APP.use(EXPRESS.static('public'));
 APP.get('/', function(req, res) {
@@ -30,11 +34,11 @@ function gameLoop() {
     deletePlayer(playersToDelete[i]);
   }
   playersToDelete = [];
-  var gameState = gamePackager.buildGameState(players, food, boosts);
-  IO.sockets.emit('gameState', gameState);
+  gameState = gamePackager.buildGameState(players, food, boosts);
+  IO.sockets.volatile.emit('gameState', gameState);
 }
 
-setInterval(gameLoop, 10);
+setInterval(gameLoop, 45);
 
 
 function findPlayer(socketID) {
@@ -46,17 +50,13 @@ function findPlayer(socketID) {
 }
 
 function socketHandshake(socket) {
-  var numOfPlayers = players.length;
-  if(numOfPlayers === 0) {
+  if(players.length === 0) {
     food = foodGen.seedFood();
     boosts = foodGen.seedSpeedBoosts();
   }
-  var player_name = ("Player " + (numOfPlayers + 1));
-  players.push(new OnlinePlayer(socket.id, player_name, (numOfPlayers * 5), (numOfPlayers * 5)));
+  var player_name = ("Player " + (players.length + 1));
+  players.push(new OnlinePlayer(socket.id, player_name, (players.length * 5), (players.length * 5)));
 
-  console.log('A user has connected.', IO.engine.clientsCount);
-  IO.sockets.emit('usersConnected', IO.engine.clientsCount);
-  socket.emit('status', 'You are connected!');
 
 
   socket.on('message', function(channel, message){
@@ -78,11 +78,21 @@ function socketHandshake(socket) {
     playersToDelete.push(socket.id);
     console.log('A user has disconnected.', IO.engine.clientsCount);
   });
+
+  console.log('A user has connected.', IO.engine.clientsCount);
+  IO.sockets.emit('usersConnected', IO.engine.clientsCount);
+  socket.emit('status', 'You are connected!');
+
+  gameState = gameState || gamePackager.buildGameState(players, food, boosts);
+
+  socket.emit("gameState", gameState);
+  socket.emit('playerInitialized');
 }
 
 function deletePlayer(socketID) {
   for(var i = 0; i < players.length; i++) {
     if (players[i].id === socketID) {
+      console.log('Disconnected player: ' + players[i].name);
       players = players.splice(i, 1);
     }
   }

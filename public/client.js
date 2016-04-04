@@ -1,3 +1,6 @@
+var CANVAS_WIDTH = 2000;
+var CANVAS_HEIGHT = 2000;
+
 //Socket
 ////////////////////////////////////////////////////////////
 var socket = io.connect();
@@ -7,8 +10,8 @@ var socket = io.connect();
 ////////////////////////////////////////////////////////////
 var renderingCanvas = document.createElement('canvas');
 var renderingContext = renderingCanvas.getContext('2d');
-renderingCanvas.setAttribute('width', z(3000) + "px");
-renderingCanvas.setAttribute('height', z(3000) + "px");
+renderingCanvas.setAttribute('width', z(CANVAS_WIDTH) + "px");
+renderingCanvas.setAttribute('height', z(CANVAS_HEIGHT) + "px");
 ////////////////////////////////////////////////////////////
 
 //'View Window' Canvas
@@ -86,60 +89,100 @@ socket.on('gameState', function(newState) {
   gameState = newState;
 });
 
-
-socket.on('connect', function() {
-  requestAnimationFrame(gameLoop);
+socket.on('playerInitialized', function() {
+  setInterval(socketLoop, 15);
+  requestAnimationFrame(animationLoop);
 });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+socket.on('error', function(o) {
+  console.log('error: ' + o);
+});
+
+socket.on('reconnect', function(o) {
+  console.log('reconnect: ' + o);
+});
+
+socket.on('reconnect_attempt', function(o) {
+  console.log('reconnect_attempt: ' + o);
+});
+
+socket.on('reconnect_error', function(o) {
+  console.log('reconnect_error: ' + o);
+});
+
+socket.on('reconnect_failed', function(o) {
+  console.log('reconnect_failed: ' + o);
+});
+
+socket.on('disconnect', function(o) {
+  console.log('disconnect: ' + o);
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 ////////////////////////////////////////////////////////////
 
 
 //Game Loop
 ////////////////////////////////////////////////////////////
-function gameLoop() {
-  currentPlayer = findPlayer(socket.id);
-  
-  zoomLevel = 1.0 - (currentPlayer.mass / 450);
-  renderingCanvas.setAttribute('width', z(3000) + "px");
-  renderingCanvas.setAttribute('height', z(3000) + "px");
-
-  renderingContext.clearRect(0, 0, z(renderingCanvas.width), z(renderingCanvas.height));
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+function socketLoop(){
   socket.send('keysPressed', keysPressed);
+};
 
-  if(typeof gameState.players !== "undefined"){
-    for(var i = 0; i < gameState.players.length; i++) {
-      shapeDrawer.drawPlayer(gameState.players[i]);
-    }
-    for(var j = 0; j < gameState.food.length; j++) {
-      shapeDrawer.drawFood(gameState.food[j]);
-    }
-    for(var k = 0; k < gameState.boosts.length; k++) {
-      shapeDrawer.drawFood(gameState.boosts[k]);
-    }
-    //Define 'View Window' Start Point (Top Left Corner)
-    ////////////////////////////////////////////////////////////
-    if(typeof currentPlayer !== 'undefined') {
-      var topLeftX = z(currentPlayer.x) - 250;
-      var topLeftY = z(currentPlayer.y) - 250;
+function animationLoop() {
+  try {
+    currentPlayer = findPlayer(socket.id);
+    
+    zoomLevel = 1.0 - (currentPlayer.mass / 450);
+    renderingCanvas.setAttribute('width', z(CANVAS_WIDTH) + "px");
+    renderingCanvas.setAttribute('height', z(CANVAS_HEIGHT) + "px");
 
-      if (topLeftX < 0)
-        topLeftX = 0;
-      if (topLeftY < 0)
-        topLeftY = 0;
-      
-      if (topLeftX + 500 > z(3000)) {
-        topLeftX = z(3000) - 500;
+    renderingContext.clearRect(0, 0, z(renderingCanvas.width), z(renderingCanvas.height));
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+    if(typeof gameState.players !== "undefined"){
+      for(var i = 0; i < gameState.players.length; i++) {
+        shapeDrawer.drawPlayer(gameState.players[i]);
       }
-      if (topLeftY + 500 > z(3000)) {
-        topLeftY = z(3000) - 500;
+      for(var j = 0; j < gameState.food.length; j++) {
+        shapeDrawer.drawFood(gameState.food[j]);
       }
+      for(var k = 0; k < gameState.boosts.length; k++) {
+        shapeDrawer.drawFood(gameState.boosts[k]);
+      }
+      //Define 'View Window' Start Point (Top Left Corner)
+      ////////////////////////////////////////////////////////////
+      if(typeof currentPlayer !== 'undefined') {
+        var topLeftX = z(currentPlayer.x) - 250;
+        var topLeftY = z(currentPlayer.y) - 250;
 
-      ctx.drawImage(renderingCanvas, topLeftX, topLeftY, 500, 500, 0, 0, 500, 500);
+        if (topLeftX < 0)
+          topLeftX = 0;
+        if (topLeftY < 0)
+          topLeftY = 0;
+        
+        if (topLeftX + 500 > z(CANVAS_WIDTH)) {
+          topLeftX = z(CANVAS_WIDTH) - 500;
+        }
+        if (topLeftY + 500 > z(CANVAS_HEIGHT)) {
+          topLeftY = z(CANVAS_HEIGHT) - 500;
+        }
+
+        ctx.drawImage(renderingCanvas, topLeftX, topLeftY, 500, 500, 0, 0, 500, 500);
+      }
+      ////////////////////////////////////////////////////////////
     }
-    ////////////////////////////////////////////////////////////
+    
   }
-  requestAnimationFrame(gameLoop);
+  catch(ex){
+    console.log("exception hit", ex);    
+  }
+  finally {
+    requestAnimationFrame(animationLoop);
+  }
 }
 ////////////////////////////////////////////////////////////
 

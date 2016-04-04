@@ -2,7 +2,7 @@ var OnlinePlayer = require('./public/online-player');
 var GamePackager = require('./lib/game-packager');
 var FoodGenerator = require('./lib/food-generator');
 var gamePackager = new GamePackager();
-var foodGen = new FoodGenerator(1140, 560);
+var foodGen = new FoodGenerator(1140, 560, players);
 
 const EXPRESS = require('express');
 const APP = EXPRESS();
@@ -24,7 +24,7 @@ APP.get('/', function(req, res) {
 IO.on('connection', socketHandshake);
 
 function gameLoop() {
-  foodGen.replaceFood(food, boosts);
+  foodGen.replaceFood(food, boosts, players);
   var gameState = gamePackager.buildGameState(players, food, boosts);
   IO.sockets.emit('gameState', gameState);
 }
@@ -43,8 +43,8 @@ function findPlayer(socketID) {
 function socketHandshake(socket) {
   var numOfPlayers = players.length;
   if(numOfPlayers === 0) {
-    food = foodGen.seedFood();
-    boosts = foodGen.seedSpeedBoosts();
+    food = foodGen.seedFood(players);
+    boosts = foodGen.seedSpeedBoosts(players);
   }
   var player_name = ("Player " + (numOfPlayers + 1));
   players.push(new OnlinePlayer(socket.id, player_name, (numOfPlayers * 5), (numOfPlayers * 5)));

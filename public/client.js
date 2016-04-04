@@ -4,7 +4,6 @@ var ctx = canvas.getContext('2d');
 var connectionCount = document.getElementById('connected-users-count');
 var statusMessage = document.getElementById('status');
 
-
 //////////Draw Class//////////
 function ShapeDrawer(canvas, context) {
   this.canvas = canvas;

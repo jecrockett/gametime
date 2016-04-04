@@ -5,6 +5,7 @@ var OnlinePlayer = require('./public/online-player');
 var GamePackager = require('./lib/game-packager');
 var FoodGenerator = require('./lib/food-generator');
 var gamePackager = new GamePackager();
+
 var foodGen = new FoodGenerator(CANVAS_WIDTH, CANVAS_HEIGHT);
 
 const EXPRESS = require('express');
@@ -29,12 +30,13 @@ APP.get('/', function(req, res) {
 IO.on('connection', socketHandshake);
 
 function gameLoop() {
-  foodGen.replaceFood(food, boosts);
+  foodGen.replaceFood(food, boosts, players);
   for(var i = 0; i < playersToDelete.length; i++){
     deletePlayer(playersToDelete[i]);
   }
   playersToDelete = [];
   gameState = gamePackager.buildGameState(players, food, boosts);
+
   IO.sockets.emit('gameState', gameState);
 }
 
@@ -50,12 +52,11 @@ function findPlayer(socketID) {
 
 function socketHandshake(socket) {
   if(IO.engine.clientsCount === 1) {
-    food = foodGen.seedFood();
-    boosts = foodGen.seedSpeedBoosts();
+    food = foodGen.seedFood(players);
+    boosts = foodGen.seedSpeedBoosts(players);
   }
   var player_name = ("Player " + (players.length + 1));
   players.push(new OnlinePlayer(socket.id, player_name, (players.length * 5), (players.length * 5)));
-
 
 
   socket.on('message', function(channel, message){

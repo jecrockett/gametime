@@ -176,9 +176,9 @@ function gameLoop() {
 }
 ////////////////////////////////////////////////////////////
 
-//Append a leader board to the page
+//Append a dynamically updating leader board to the page
 function appendLeaderBoard(players){
-  var leaderBoard = $('.leader-board');
+  var leaderBoard = $('.list');
   $('.player').remove();
   var b = players.sort(function(a,b){
     return b.mass - a.mass;

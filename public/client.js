@@ -1,11 +1,6 @@
 var CANVAS_WIDTH = 2000;
 var CANVAS_HEIGHT = 2000;
 
-// when the client arrives, have a div on the page asking for input
-// when the client submits that input, initiate the websocket connection
-// pass the name to the Server
-// server update the person's name
-
 //Socket
 ////////////////////////////////////////////////////////////
 var socket = io.connect();
@@ -118,11 +113,11 @@ socket.on('playerInitialized', function() {
 ////////////////////////////////////////////////////////////
 function socketLoop(){
   socket.send('keysPressed', keysPressed);
-};
+}
 
 function gameLoop() {
   try {
-    currentPlayer = findPlayer(socket.id);
+    var currentPlayer = findPlayer(socket.id);
 
     zoomLevel = 1.0 - (currentPlayer.mass / 450);
     renderingCanvas.setAttribute('width', zoom(CANVAS_WIDTH) + "px");
@@ -148,11 +143,12 @@ function gameLoop() {
         var topLeftX = zoom(currentPlayer.x) - 250;
         var topLeftY = zoom(currentPlayer.y) - 250;
 
-        if (topLeftX < 0)
+        if (topLeftX < 0) {
           topLeftX = 0;
-        if (topLeftY < 0)
+        }
+        if (topLeftY < 0) {
           topLeftY = 0;
-
+        }
         if (topLeftX + 500 > zoom(CANVAS_WIDTH)) {
           topLeftX = zoom(CANVAS_WIDTH) - 500;
         }
@@ -193,7 +189,7 @@ function findPlayer(socketID) {
 ////////////////////////////////////////////////////////////
 function zoom(value) {
   return value * zoomLevel;
-};
+}
 ////////////////////////////////////////////////////////////
 
 //Error Listeners

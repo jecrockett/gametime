@@ -1,7 +1,7 @@
 var CANVAS_WIDTH = 2000;
 var CANVAS_HEIGHT = 2000;
 
-function OnlinePlayer(id, name, x, y) {
+function OnlinePlayer(id, name, x, y, color) {
   this.id   = id;
   this.name = name;
   this.x    = 5;

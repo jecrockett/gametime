@@ -8,7 +8,7 @@ var socket = io.connect();
 $('#submit-info').on('click', function(){
   var username = $('#player-input').val();
   var color = $('.jscolor').val();
-  var info = [username, color]
+  var info = [username, color];
   socket.send('userInfo', info);
   $('#game').removeClass('hidden');
   $('.player-info').addClass('hidden');
@@ -119,6 +119,10 @@ function gameLoop() {
     var currentPlayer = findPlayer(socket.id);
 
     zoomLevel = 1.0 - (currentPlayer.mass / 450);
+       if (zoomLevel < 0.25) {
+         zoomLevel = 0.25;
+       }
+
     renderingCanvas.setAttribute('width', zoom(CANVAS_WIDTH) + "px");
     renderingCanvas.setAttribute('height', zoom(CANVAS_HEIGHT) + "px");
 

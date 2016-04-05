@@ -15,6 +15,7 @@ $('#submit-info').on('click', function(){
   var info = [username, color];
   socket.send('userInfo', info);
   $('#game').removeClass('hidden');
+  $('.leader-board').removeClass('hidden');
   $('.player-info').addClass('hidden');
 });
 ////////////////////////////////////////////////////////////
@@ -155,10 +156,20 @@ function gameLoop() {
   }
   finally {
     requestAnimationFrame(gameLoop);
+    appendLeaderBoard(gameState.players);
   }
 }
 ////////////////////////////////////////////////////////////
 
+//Append a dynamically updating leader board to the page
+function appendLeaderBoard(players){
+  var leaderBoard = $('.list');
+  $('.player').remove();
+  players.forEach(function(player){
+    leaderBoard.prepend('<li class="player">' + player.name + '</li>');
+  });
+}
+/////////////////////////////////////////////////////////////////
 
 //Find a Player by socketID
 ////////////////////////////////////////////////////////////

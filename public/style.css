@@ -5,3 +5,7 @@
 h1 {
   font-family: arial;
 }
+
+.hidden {
+  display: none;
+}

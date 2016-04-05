@@ -36,7 +36,6 @@ function gameLoop() {
   }
   playersToDelete = [];
   gameState = gamePackager.buildGameState(players, food, boosts);
-
   IO.sockets.emit('gameState', gameState);
 }
 
@@ -58,8 +57,13 @@ function socketHandshake(socket) {
   var player_name = ("Player " + (players.length + 1));
   players.push(new OnlinePlayer(socket.id, player_name, (players.length * 5), (players.length * 5)));
 
-
   socket.on('message', function(channel, message){
+    if (channel === 'userInfo') {
+      var playerToUpdate = findPlayer(socket.id);
+      playerToUpdate.name = message[0];
+      playerToUpdate.color = '#' + message[1];
+    }
+
     if (channel === 'keysPressed') {
       var player = findPlayer(socket.id);
       if(typeof player !== "undefined"){

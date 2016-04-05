@@ -6,7 +6,7 @@ function OnlinePlayer(id, name, x, y, color) {
   this.name = name;
   this.x    = 5;
   this.y    = 5;
-  this.mass = 5;
+  this.mass = 7;
   this.speed = 5;
   this.color = 'white';
   this.speedBoostTime = null;
@@ -51,7 +51,7 @@ OnlinePlayer.prototype = {
       if(distance < this.mass) {
         food.splice(i, 1);
         this.mass += 1;
-        if (this.speed > 0.8){ this.speed -= 0.03; }
+        if (this.speed > 0.8){ this.speed -= 0.015; }
       }
     }
   },
@@ -84,7 +84,7 @@ OnlinePlayer.prototype = {
     this.mass  = 5;
     this.x     = Math.floor((Math.random() * CANVAS_WIDTH) + 5);
     this.y     = Math.floor((Math.random() * CANVAS_HEIGHT) + 5);
-    this.speed = 5;
+    this. f = 5;
     this.speedBoostTime = null;
   },
 
@@ -97,6 +97,7 @@ OnlinePlayer.prototype = {
          (players[i] !== this) &&
          (this.mass * 0.9 > players[i].mass)){
            this.mass = this.mass + (players[i].mass/2);
+           this.speed = this.speed - ((players[i].mass/2) * .015);
            players[i].resetPlayer();
       }
     }

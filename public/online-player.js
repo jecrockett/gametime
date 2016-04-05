@@ -8,6 +8,7 @@ function OnlinePlayer(id, name, x, y) {
   this.y    = 5;
   this.mass = 5;
   this.speed = 5;
+  this.color = 'white';
   this.speedBoostTime = null;
 
   this.movePlayer = function(xOffset, yOffset) {

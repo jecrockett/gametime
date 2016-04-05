@@ -180,11 +180,8 @@ function gameLoop() {
 function appendLeaderBoard(players){
   var leaderBoard = $('.list');
   $('.player').remove();
-  var sorted = players.sort(function(a,b){
-    return b.mass - a.mass;
-  });
-  sorted.forEach(function(player){
-    leaderBoard.append('<li class="player">' + player.name + '</li>');
+  players.forEach(function(player){
+    leaderBoard.prepend('<li class="player">' + player.name + '</li>');
   });
 }
 /////////////////////////////////////////////////////////////////

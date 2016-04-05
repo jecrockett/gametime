@@ -6,7 +6,7 @@ var CANVAS_HEIGHT = 2000;
 var socket = io.connect();
 
 $('#submit-info').on('click', function(){
-  var username = $('#player-input').val();
+  var username = $('#name-input').val();
   var color = $('.jscolor').val();
   var info = [username, color];
   socket.send('userInfo', info);

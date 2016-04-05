@@ -6,14 +6,37 @@
   <link href="./style.css" rel="stylesheet">
 </head>
 <body>
-  <span id='connected-users-count'></span>
-  <span id='status'></span>
+  <header>
+    <h2>Faux-Gar</h2>
+    <h6>An Agar.io-inspired Multiplayer Real-Time Game</h6>
+  </header>
+
   <div class="player-info">
-    <input id="player-input" type="text"></input>
-    <span>Pick Your Color: <input class="jscolor" value="ab2567"></span>
+    <input id="name-input" class="input" type="text" placeholder="Enter a player name"></input>
+    <div>
+      <p>Click To Select Your Color:</p>
+      <input id="color-input" class="jscolor input" value="ab2567">
+    </div>
     <a id="submit-info" href="#">Join Game</a>
   </div>
+
+  <div id="game-container">
   <canvas id="game" class="hidden" width="500px", height="500px"></canvas>
+  </div>
+
+  <div class="instructions">
+    <p><strong>Player Movement:</strong> W A S D</p>
+    <p><strong>Black</strong> food makes you bigger.</p>
+    <p><strong>Green</strong> food gives you a speed boost.</p>
+    <p><strong>Red</strong> food is poisonous -- be careful, it will make you smaller!</p>
+    <p><strong>Your Goal:</strong> Top the leaderboard, consume your friends, live in infamy.</p>
+  </div>
+
+  <div class="socket-info">
+    <span id='connected-users-count'></span>
+    <span id='status'></span>
+  </div>
+
   <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
   <script src="jscolor.js"></script>
   <script src='./socket.io/socket.io.js'></script>

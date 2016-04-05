@@ -15,7 +15,7 @@ header {
   text-align: center;
 }
 
-h2, h6 {
+h2, h3, h6 {
   margin: 0 0;
 }
 
@@ -79,4 +79,17 @@ h2 {
 .socket-info {
   position: fixed;
   bottom: 10px;
+}
+
+.leader-board {
+  position: absolute;
+  width: 200px;
+  padding: 20px;
+  border: 1px solid black;
+  right: 75px;
+  top: 70px;
+}
+
+.leader-board h3 {
+  text-align: center;
 }

@@ -1,9 +1,9 @@
-var CANVAS_WIDTH = 2000;
-var CANVAS_HEIGHT = 2000;
-
 var OnlinePlayer = require('./public/online-player');
 var GamePackager = require('./lib/game-packager');
 var FoodGenerator = require('./lib/food-generator');
+
+var CANVAS_WIDTH = 2000;
+var CANVAS_HEIGHT = 2000;
 var gamePackager = new GamePackager();
 var foodGen = new FoodGenerator(CANVAS_WIDTH, CANVAS_HEIGHT);
 var players = [];

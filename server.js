@@ -29,6 +29,7 @@ APP.get('/', function(req, res) {
 //Initializes new player and start game
 IO.on('connection', playerInitialization);
 setInterval(gameLoop, 45);
+////////////////////////////////////////////////////////////
 
 
 function gameLoop() {
@@ -40,7 +41,6 @@ function gameLoop() {
   gameState = gamePackager.buildGameState(players, food, boosts, viruses);
   IO.sockets.emit('gameState', gameState);
 }
-////////////////////////////////////////////////////////////
 
 function findPlayer(socketID) {
   for(var i = 0; i < players.length; i++) {

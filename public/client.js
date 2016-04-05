@@ -4,6 +4,16 @@ var CANVAS_HEIGHT = 2000;
 //Socket
 ////////////////////////////////////////////////////////////
 var socket = io.connect();
+
+$('#submit-info').on('click', function(){
+  var username = $('#player-input').val();
+  var color = $('.jscolor').val();
+  var info = [username, color]
+  socket.send('userInfo', info);
+  $('#game').removeClass('hidden');
+  $('.player-info').addClass('hidden');
+});
+
 ////////////////////////////////////////////////////////////
 
 //Main 'Rendering' Canvas - Holds True Game State
@@ -45,7 +55,7 @@ ShapeDrawer.prototype = {
   drawPlayer: function(player) {
     this.context.beginPath();
     this.context.arc(zoom(player.x), zoom(player.y), zoom(player.mass), 0, Math.PI * 2);
-    this.context.fillStyle = 'royalblue';
+    this.context.fillStyle = player.color;
     this.context.fill();
     return player;
   }
@@ -75,7 +85,7 @@ this.onkeyup = function(event) {
 ////////////////////////////////////////////////////////////
 
 
-//Receive From Server & Process 
+//Receive From Server & Process
 ////////////////////////////////////////////////////////////
 socket.on('usersConnected', function(count) {
   connectionCount.innerText = count + ' users connected.';
@@ -102,12 +112,12 @@ socket.on('playerInitialized', function() {
 ////////////////////////////////////////////////////////////
 function socketLoop(){
   socket.send('keysPressed', keysPressed);
-};
+}
 
 function gameLoop() {
   try {
-    currentPlayer = findPlayer(socket.id);
-    
+    var currentPlayer = findPlayer(socket.id);
+
     zoomLevel = 1.0 - (currentPlayer.mass / 450);
     renderingCanvas.setAttribute('width', zoom(CANVAS_WIDTH) + "px");
     renderingCanvas.setAttribute('height', zoom(CANVAS_HEIGHT) + "px");
@@ -132,11 +142,12 @@ function gameLoop() {
         var topLeftX = zoom(currentPlayer.x) - 250;
         var topLeftY = zoom(currentPlayer.y) - 250;
 
-        if (topLeftX < 0)
+        if (topLeftX < 0) {
           topLeftX = 0;
-        if (topLeftY < 0)
+        }
+        if (topLeftY < 0) {
           topLeftY = 0;
-        
+        }
         if (topLeftX + 500 > zoom(CANVAS_WIDTH)) {
           topLeftX = zoom(CANVAS_WIDTH) - 500;
         }
@@ -148,10 +159,10 @@ function gameLoop() {
       }
       ////////////////////////////////////////////////////////////
     }
-    
+
   }
   catch(ex){
-    console.log("exception hit: ", ex);    
+    console.log("exception hit: ", ex);
   }
   finally {
     requestAnimationFrame(gameLoop);
@@ -177,7 +188,7 @@ function findPlayer(socketID) {
 ////////////////////////////////////////////////////////////
 function zoom(value) {
   return value * zoomLevel;
-};
+}
 ////////////////////////////////////////////////////////////
 
 //Error Listeners

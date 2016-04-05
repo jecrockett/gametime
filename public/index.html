@@ -8,7 +8,14 @@
 <body>
   <span id='connected-users-count'></span>
   <span id='status'></span>
-  <canvas id="game" width="500px", height="500px"></canvas>
+  <div class="player-info">
+    <input id="player-input" type="text"></input>
+    <span>Pick Your Color: <input class="jscolor" value="ab2567"></span>
+    <a id="submit-info" href="#">Join Game</a>
+  </div>
+  <canvas id="game" class="hidden" width="500px", height="500px"></canvas>
+  <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+  <script src="jscolor.js"></script>
   <script src='./socket.io/socket.io.js'></script>
   <script src="./main.bundle.js"></script>
   <script src="./client.js"></script>

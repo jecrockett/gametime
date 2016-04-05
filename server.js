@@ -5,8 +5,13 @@ var OnlinePlayer = require('./public/online-player');
 var GamePackager = require('./lib/game-packager');
 var FoodGenerator = require('./lib/food-generator');
 var gamePackager = new GamePackager();
-
 var foodGen = new FoodGenerator(CANVAS_WIDTH, CANVAS_HEIGHT);
+var players = [];
+var food    = [];
+var boosts  = [];
+var viruses = [];
+var playersToDelete = [];
+var gameState = null;
 
 const EXPRESS = require('express');
 const APP = EXPRESS();
@@ -16,19 +21,16 @@ const HTTP = require('http').Server(APP).listen(PORT, function() {
 });
 const IO = require('socket.io')(HTTP);
 
-var players = [];
-var food    = [];
-var boosts  = [];
-var viruses = [];
-var playersToDelete = [];
-var gameState = null;
 
 APP.use(EXPRESS.static('public'));
 APP.get('/', function(req, res) {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-IO.on('connection', socketHandshake);
+//Initializes new player and start game
+IO.on('connection', playerInitialization);
+setInterval(gameLoop, 45);
+
 
 function gameLoop() {
   foodGen.replaceFood(food, boosts, players, viruses);
@@ -39,8 +41,7 @@ function gameLoop() {
   gameState = gamePackager.buildGameState(players, food, boosts, viruses);
   IO.sockets.emit('gameState', gameState);
 }
-
-setInterval(gameLoop, 45);
+////////////////////////////////////////////////////////////
 
 function findPlayer(socketID) {
   for(var i = 0; i < players.length; i++) {
@@ -50,37 +51,14 @@ function findPlayer(socketID) {
   }
 }
 
-function socketHandshake(socket) {
-  if(IO.engine.clientsCount === 1) {
-    food = foodGen.seedFood(players);
-    boosts = foodGen.seedSpeedBoosts(players);
-    viruses = foodGen.seedViruses(players);
-  }
-  var player_name = ("Player " + (players.length + 1));
-  var startingX = Math.floor((Math.random() * CANVAS_WIDTH) + 5)
-  var startingY = Math.floor((Math.random() * CANVAS_HEIGHT) + 5)
-  players.push(new OnlinePlayer(socket.id, player_name, startingX, startingY));
+//Initializes new player and opens the connection for communicating
+function playerInitialization(socket) {
+  addPlayer(socket);
+  seedBoard();
 
   socket.on('message', function(channel, message){
-    if (channel === 'userInfo') {
-      var playerToUpdate = findPlayer(socket.id);
-      playerToUpdate.name = message[0];
-      playerToUpdate.color = '#' + message[1];
-    }
-
-    if (channel === 'keysPressed') {
-      var player = findPlayer(socket.id);
-      if(typeof player !== "undefined"){
-        player.resetBoosts();
-        player.move(message);
-        player.eatFood.call(player, food);
-        player.eatBoosts.call(player, boosts);
-        player.eatViruses.call(player, viruses);
-        if(players.length > 0){
-          player.eatPlayer(players);
-        }
-      }
-    }
+    checkForAndUpdateUserInfo(channel, message, socket);
+    updatePlayerActions(channel, message, socket);
   });
 
   socket.on('disconnect', function() {
@@ -96,6 +74,48 @@ function socketHandshake(socket) {
 
   socket.emit("gameState", gameState);
   socket.emit('playerInitialized');
+}
+////////////////////////////////////////////////////////////
+
+
+function checkForAndUpdateUserInfo(channel, message, socket){
+  if (channel === 'userInfo') {
+    var playerToUpdate = findPlayer(socket.id);
+    playerToUpdate.name = message[0];
+    playerToUpdate.color = '#' + message[1];
+  }
+}
+
+function addPlayer(socket){
+  var player_name = ("Player " + (players.length + 1));
+  var startingX = Math.floor((Math.random() * CANVAS_WIDTH) + 5);
+  var startingY = Math.floor((Math.random() * CANVAS_HEIGHT) + 5);
+  players.push(new OnlinePlayer(socket.id, player_name, startingX, startingY));
+}
+
+//Takes input form client and send over updated player actions
+function updatePlayerActions(channel, message, socket){
+  if (channel === 'keysPressed') {
+    var player = findPlayer(socket.id);
+    if(typeof player !== "undefined"){
+      player.resetBoosts();
+      player.move(message);
+      player.eatFood.call(player, food);
+      player.eatBoosts.call(player, boosts);
+      player.eatViruses.call(player, viruses);
+      if(players.length > 0){
+        player.eatPlayer(players);
+      }
+    }
+  }
+}
+
+function seedBoard(){
+  if(IO.engine.clientsCount === 1) {
+    food = foodGen.seedFood(players);
+    boosts = foodGen.seedSpeedBoosts(players);
+    viruses = foodGen.seedViruses(players);
+  }
 }
 
 function deletePlayer(socketID) {

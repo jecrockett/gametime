@@ -4,7 +4,10 @@ var CANVAS_HEIGHT = 2000;
 //Socket
 ////////////////////////////////////////////////////////////
 var socket = io.connect();
+////////////////////////////////////////////////////////////
 
+//HTML/CSS
+////////////////////////////////////////////////////////////
 $('#submit-info').on('click', function(){
   var username = $('#player-input').val();
   var color = $('.jscolor').val();
@@ -13,7 +16,6 @@ $('#submit-info').on('click', function(){
   $('#game').removeClass('hidden');
   $('.player-info').addClass('hidden');
 });
-
 ////////////////////////////////////////////////////////////
 
 //Main 'Rendering' Canvas - Holds True Game State
@@ -44,10 +46,10 @@ function ShapeDrawer(canvas, context) {
 }
 
 ShapeDrawer.prototype = {
-  drawFood: function(food) {
+  drawFood: function(foodItem) {
     this.context.beginPath();
-    this.context.arc(zoom(food.x), zoom(food.y), zoom(5), 0, Math.PI * 2);
-    this.context.fillStyle = food.color;
+    this.context.arc(zoom(foodItem.x), zoom(foodItem.y), zoom(foodItem.mass), 0, Math.PI * 2);
+    this.context.fillStyle = foodItem.color;
     this.context.fill();
     return this;
   },
@@ -57,17 +59,23 @@ ShapeDrawer.prototype = {
     this.context.arc(zoom(player.x), zoom(player.y), zoom(player.mass), 0, Math.PI * 2);
     this.context.fillStyle = player.color;
     this.context.fill();
+
+    var fontSize = Math.floor(18/((1.0 - (player.mass / 450))));
+    this.context.textAlign = 'center';
+    this.context.fillStyle = 'white';
+    this.context.font = fontSize + 'px impact';
+    this.context.fillText(player.name, Math.floor(zoom(player.x)), Math.floor(zoom(player.y)));
+    this.context.strokeStyle = 'black';
+    this.context.strokeText(player.name, Math.floor(zoom(player.x)), Math.floor(zoom(player.y)));
     return player;
   }
 };
 ////////////////////////////////////////////////////////////
 
-
 var shapeDrawer = new ShapeDrawer(renderingCanvas, renderingContext);
 var zoomLevel = 1.0;
 var gameState = {};
 var keysPressed = {};
-
 
 //Key Press Listeners
 ////////////////////////////////////////////////////////////
@@ -103,8 +111,6 @@ socket.on('playerInitialized', function() {
   setInterval(socketLoop, 15);
   requestAnimationFrame(gameLoop);
 });
-
-
 ////////////////////////////////////////////////////////////
 
 
@@ -140,11 +146,14 @@ function gameLoop() {
       for(var k = 0; k < gameState.boosts.length; k++) {
         shapeDrawer.drawFood(gameState.boosts[k]);
       }
+      for(var l = 0; l < gameState.viruses.length; l++) {
+        shapeDrawer.drawFood(gameState.viruses[l]);
+      }
       //Define 'View Window' Start Point (Top Left Corner)
       ////////////////////////////////////////////////////////////
       if(typeof currentPlayer !== 'undefined') {
-        var topLeftX = zoom(currentPlayer.x) - 250;
-        var topLeftY = zoom(currentPlayer.y) - 250;
+        var topLeftX = zoom(currentPlayer.x) - (CANVAS_WIDTH/8);
+        var topLeftY = zoom(currentPlayer.y) - (CANVAS_HEIGHT/8);
 
         if (topLeftX < 0) {
           topLeftX = 0;
@@ -194,30 +203,3 @@ function zoom(value) {
   return value * zoomLevel;
 }
 ////////////////////////////////////////////////////////////
-
-//Error Listeners
-/////////////////////////////////////////////////////////////////////////////////////////////////
-socket.on('error', function(o) {
-  console.log('error: ' + o);
-});
-
-socket.on('reconnect', function(o) {
-  console.log('reconnect: ' + o);
-});
-
-socket.on('reconnect_attempt', function(o) {
-  console.log('reconnect_attempt: ' + o);
-});
-
-socket.on('reconnect_error', function(o) {
-  console.log('reconnect_error: ' + o);
-});
-
-socket.on('reconnect_failed', function(o) {
-  console.log('reconnect_failed: ' + o);
-});
-
-socket.on('disconnect', function(o) {
-  console.log('disconnect: ' + o);
-});
-/////////////////////////////////////////////////////////////////////////////////////////////////

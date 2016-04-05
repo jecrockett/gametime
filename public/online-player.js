@@ -68,6 +68,18 @@ OnlinePlayer.prototype = {
     }
   },
 
+  eatViruses: function(viruses) {
+    for(var i = 0; i < viruses.length; i++) {
+      var xDiff = this.x - viruses[i].x;
+      var yDiff = this.y - viruses[i].y;
+      var distance = Math.sqrt( xDiff*xDiff + yDiff*yDiff );
+      if((distance < (this.mass + viruses[i].mass)) && ((this.mass * 0.9) > viruses[i].mass)) {
+        viruses.splice(i, 1);
+        this.mass = this.mass / 2;
+      }
+    }
+  },
+
   resetPlayer: function(){
     this.mass  = 5;
     this.x     = Math.floor((Math.random() * CANVAS_WIDTH) + 5);
@@ -83,7 +95,8 @@ OnlinePlayer.prototype = {
       var distance = Math.sqrt( xDiff*xDiff + yDiff*yDiff);
       if((this.mass > (distance + players[i].mass * 0.5)) &&
          (players[i] !== this) &&
-         (this.mass * 0.8 > players[i].mass)){
+         (this.mass * 0.9 > players[i].mass)){
+           this.mass = this.mass + (players[i].mass/2);
            players[i].resetPlayer();
       }
     }

@@ -6,7 +6,7 @@ function OnlinePlayer(id, name, x, y, color) {
   this.name = name;
   this.x    = 5;
   this.y    = 5;
-  this.mass = 5;
+  this.mass = 7;
   this.speed = 5;
   this.color = 'white';
   this.speedBoostTime = null;
@@ -29,18 +29,10 @@ function OnlinePlayer(id, name, x, y, color) {
 
 OnlinePlayer.prototype = {
   move: function(keysPressed) {
-    if (keysPressed[65] && this.canMoveLeft()) {
-      this.moveLeft();
-    }
-    if (keysPressed[68] && this.canMoveRight()) {
-      this.moveRight();
-    }
-    if (keysPressed[83] && this.canMoveDown()) {
-      this.moveDown();
-    }
-    if (keysPressed[87] && this.canMoveUp()) {
-      this.moveUp();
-    }
+    if (keysPressed[65] && this.canMoveLeft()) { this.moveLeft(); }
+    if (keysPressed[68] && this.canMoveRight()) { this.moveRight(); }
+    if (keysPressed[83] && this.canMoveDown()) { this.moveDown(); }
+    if (keysPressed[87] && this.canMoveUp()) { this.moveUp(); }
   },
 
   eatFood: function(food) {
@@ -51,7 +43,7 @@ OnlinePlayer.prototype = {
       if(distance < this.mass) {
         food.splice(i, 1);
         this.mass += 1;
-        if (this.speed > 0.8){ this.speed -= 0.03; }
+        if (this.speed > 0.75){ this.speed -= 0.015; }
       }
     }
   },
@@ -68,8 +60,20 @@ OnlinePlayer.prototype = {
     }
   },
 
+  eatViruses: function(viruses) {
+    for(var i = 0; i < viruses.length; i++) {
+      var xDiff = this.x - viruses[i].x;
+      var yDiff = this.y - viruses[i].y;
+      var distance = Math.sqrt( xDiff*xDiff + yDiff*yDiff );
+      if((distance < (this.mass + viruses[i].mass)) && ((this.mass * 0.9) > viruses[i].mass)) {
+        viruses.splice(i, 1);
+        this.mass = this.mass / 2;
+      }
+    }
+  },
+
   resetPlayer: function(){
-    this.mass  = 5;
+    this.mass  = 7;
     this.x     = Math.floor((Math.random() * CANVAS_WIDTH) + 5);
     this.y     = Math.floor((Math.random() * CANVAS_HEIGHT) + 5);
     this.speed = 5;
@@ -83,7 +87,9 @@ OnlinePlayer.prototype = {
       var distance = Math.sqrt( xDiff*xDiff + yDiff*yDiff);
       if((this.mass > (distance + players[i].mass * 0.5)) &&
          (players[i] !== this) &&
-         (this.mass * 0.8 > players[i].mass)){
+         (this.mass * 0.9 > players[i].mass)){
+           this.mass = this.mass + (players[i].mass/2);
+           this.speed = this.speed - ((players[i].mass/2) * .015);
            players[i].resetPlayer();
       }
     }
@@ -114,35 +120,19 @@ OnlinePlayer.prototype = {
 
   movePlayer1: function() {
     if (this.isPlayer1()) {
-      if (this.attemptsValidMoveLeft('P1LEFT')) {
-        this.moveLeft();
-      }
-      if (this.attemptsValidMoveRight('P1RIGHT')) {
-        this.moveRight();
-      }
-      if (this.attemptsValidMoveUp('P1UP')) {
-        this.moveUp();
-      }
-      if (this.attemptsValidMoveDown('P1DOWN')) {
-        this.moveDown();
-      }
+      if (this.attemptsValidMoveLeft('P1LEFT')) { this.moveLeft(); }
+      if (this.attemptsValidMoveRight('P1RIGHT')) { this.moveRight(); }
+      if (this.attemptsValidMoveUp('P1UP')) { this.moveUp(); }
+      if (this.attemptsValidMoveDown('P1DOWN')) { this.moveDown(); }
     }
   },
 
   movePlayer2: function() {
     if (this.isPlayer2()) {
-      if (this.attemptsValidMoveLeft('P2LEFT')) {
-        this.moveLeft();
-      }
-      if (this.attemptsValidMoveRight('P2RIGHT')) {
-        this.moveRight();
-      }
-      if (this.attemptsValidMoveUp('P2UP')) {
-        this.moveUp();
-      }
-      if (this.attemptsValidMoveDown('P2DOWN')) {
-        this.moveDown();
-      }
+      if (this.attemptsValidMoveLeft('P2LEFT')) { this.moveLeft(); }
+      if (this.attemptsValidMoveRight('P2RIGHT')) { this.moveRight(); }
+      if (this.attemptsValidMoveUp('P2UP')) { this.moveUp(); }
+      if (this.attemptsValidMoveDown('P2DOWN')) { this.moveDown(); }
     }
   },
 

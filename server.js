@@ -19,6 +19,7 @@ const IO = require('socket.io')(HTTP);
 var players = [];
 var food    = [];
 var boosts  = [];
+var viruses = [];
 var playersToDelete = [];
 var gameState = null;
 
@@ -30,12 +31,12 @@ APP.get('/', function(req, res) {
 IO.on('connection', socketHandshake);
 
 function gameLoop() {
-  foodGen.replaceFood(food, boosts, players);
+  foodGen.replaceFood(food, boosts, players, viruses);
   for(var i = 0; i < playersToDelete.length; i++){
     deletePlayer(playersToDelete[i]);
   }
   playersToDelete = [];
-  gameState = gamePackager.buildGameState(players, food, boosts);
+  gameState = gamePackager.buildGameState(players, food, boosts, viruses);
   IO.sockets.emit('gameState', gameState);
 }
 
@@ -53,9 +54,12 @@ function socketHandshake(socket) {
   if(IO.engine.clientsCount === 1) {
     food = foodGen.seedFood(players);
     boosts = foodGen.seedSpeedBoosts(players);
+    viruses = foodGen.seedViruses(players);
   }
   var player_name = ("Player " + (players.length + 1));
-  players.push(new OnlinePlayer(socket.id, player_name, (players.length * 5), (players.length * 5)));
+  var startingX = Math.floor((Math.random() * CANVAS_WIDTH) + 5)
+  var startingY = Math.floor((Math.random() * CANVAS_HEIGHT) + 5)
+  players.push(new OnlinePlayer(socket.id, player_name, startingX, startingY));
 
   socket.on('message', function(channel, message){
     if (channel === 'userInfo') {
@@ -71,6 +75,7 @@ function socketHandshake(socket) {
         player.move(message);
         player.eatFood.call(player, food);
         player.eatBoosts.call(player, boosts);
+        player.eatViruses.call(player, viruses);
         if(players.length > 0){
           player.eatPlayer(players);
         }
@@ -87,7 +92,7 @@ function socketHandshake(socket) {
   IO.sockets.emit('usersConnected', IO.engine.clientsCount);
   socket.emit('status', 'You are connected!');
 
-  gameState = gameState || gamePackager.buildGameState(players, food, boosts);
+  gameState = gameState || gamePackager.buildGameState(players, food, boosts, viruses);
 
   socket.emit("gameState", gameState);
   socket.emit('playerInitialized');

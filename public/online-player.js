@@ -1,13 +1,15 @@
 var CANVAS_WIDTH = 2000;
 var CANVAS_HEIGHT = 2000;
 
-function OnlinePlayer(id, name, x, y) {
+function OnlinePlayer(id, name, x, y, color) {
   this.id   = id;
   this.name = name;
   this.x    = 5;
   this.y    = 5;
   this.mass = 5;
   this.speed = 5;
+  // this.color = ['auqu'][Math.floor(Math.random() * myArray.length)];
+  this.color = 'white'
   this.speedBoostTime = null;
 
   this.movePlayer = function(xOffset, yOffset) {

@@ -4,7 +4,8 @@
   "description": "A starter kit for Turing School's Game Time project.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js --ignore lib/ --ignore test/",
+    "start": "node ./server.js",
+    "dev": "nodemon server.js --ignore lib/ --ignore test/",
     "watch": "webpack --watch",
     "build": "./node_modules/webpack/bin/webpack.js",
     "test": "./node_modules/mocha/bin/mocha --compilers js:babel/register"

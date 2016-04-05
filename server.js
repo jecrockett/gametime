@@ -1,9 +1,9 @@
-var CANVAS_WIDTH = 2000;
-var CANVAS_HEIGHT = 2000;
-
 var OnlinePlayer = require('./public/online-player');
 var GamePackager = require('./lib/game-packager');
 var FoodGenerator = require('./lib/food-generator');
+
+var CANVAS_WIDTH = 2000;
+var CANVAS_HEIGHT = 2000;
 var gamePackager = new GamePackager();
 var foodGen = new FoodGenerator(CANVAS_WIDTH, CANVAS_HEIGHT);
 var players = [];
@@ -21,7 +21,6 @@ const HTTP = require('http').Server(APP).listen(PORT, function() {
 });
 const IO = require('socket.io')(HTTP);
 
-
 APP.use(EXPRESS.static('public'));
 APP.get('/', function(req, res) {
   res.sendFile(__dirname + '/public/index.html');
@@ -30,6 +29,7 @@ APP.get('/', function(req, res) {
 //Initializes new player and start game
 IO.on('connection', playerInitialization);
 setInterval(gameLoop, 45);
+////////////////////////////////////////////////////////////
 
 
 function gameLoop() {
@@ -41,7 +41,6 @@ function gameLoop() {
   gameState = gamePackager.buildGameState(players, food, boosts, viruses);
   IO.sockets.emit('gameState', gameState);
 }
-////////////////////////////////////////////////////////////
 
 function findPlayer(socketID) {
   for(var i = 0; i < players.length; i++) {

@@ -21,7 +21,6 @@ const HTTP = require('http').Server(APP).listen(PORT, function() {
 });
 const IO = require('socket.io')(HTTP);
 
-
 APP.use(EXPRESS.static('public'));
 APP.get('/', function(req, res) {
   res.sendFile(__dirname + '/public/index.html');

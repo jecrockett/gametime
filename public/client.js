@@ -1,9 +1,24 @@
 var CANVAS_WIDTH = 2000;
 var CANVAS_HEIGHT = 2000;
 
+// when the client arrives, have a div on the page asking for input
+// when the client submits that input, initiate the websocket connection
+// pass the name to the Server
+// server update the person's name
+
 //Socket
 ////////////////////////////////////////////////////////////
 var socket = io.connect();
+
+$('#submit-info').on('click', function(){
+  var username = $('#player-input').val();
+  var color = $('.jscolor').val();
+  var info = [username, color]
+  socket.send('userInfo', info);
+  $('#game').removeClass('hidden');
+  $('.player-info').addClass('hidden');
+});
+
 ////////////////////////////////////////////////////////////
 
 //Main 'Rendering' Canvas - Holds True Game State
@@ -45,7 +60,8 @@ ShapeDrawer.prototype = {
   drawPlayer: function(player) {
     this.context.beginPath();
     this.context.arc(zoom(player.x), zoom(player.y), zoom(player.mass), 0, Math.PI * 2);
-    this.context.fillStyle = 'royalblue';
+    console.log(player, player.color);
+    this.context.fillStyle = player.color;
     this.context.fill();
     return player;
   }
@@ -75,7 +91,7 @@ this.onkeyup = function(event) {
 ////////////////////////////////////////////////////////////
 
 
-//Receive From Server & Process 
+//Receive From Server & Process
 ////////////////////////////////////////////////////////////
 socket.on('usersConnected', function(count) {
   connectionCount.innerText = count + ' users connected.';
@@ -107,7 +123,7 @@ function socketLoop(){
 function gameLoop() {
   try {
     currentPlayer = findPlayer(socket.id);
-    
+
     zoomLevel = 1.0 - (currentPlayer.mass / 450);
     renderingCanvas.setAttribute('width', zoom(CANVAS_WIDTH) + "px");
     renderingCanvas.setAttribute('height', zoom(CANVAS_HEIGHT) + "px");
@@ -136,7 +152,7 @@ function gameLoop() {
           topLeftX = 0;
         if (topLeftY < 0)
           topLeftY = 0;
-        
+
         if (topLeftX + 500 > zoom(CANVAS_WIDTH)) {
           topLeftX = zoom(CANVAS_WIDTH) - 500;
         }
@@ -148,10 +164,10 @@ function gameLoop() {
       }
       ////////////////////////////////////////////////////////////
     }
-    
+
   }
   catch(ex){
-    console.log("exception hit: ", ex);    
+    console.log("exception hit: ", ex);
   }
   finally {
     requestAnimationFrame(gameLoop);

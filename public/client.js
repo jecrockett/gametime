@@ -6,7 +6,8 @@ var CANVAS_HEIGHT = 2000;
 var socket = io.connect();
 ////////////////////////////////////////////////////////////
 
-//HTML/CSS
+
+//HTML/CSS - User Form
 ////////////////////////////////////////////////////////////
 $('#submit-info').on('click', function(){
   var username = $('#player-input').val();
@@ -18,6 +19,7 @@ $('#submit-info').on('click', function(){
 });
 ////////////////////////////////////////////////////////////
 
+
 //Main 'Rendering' Canvas - Holds True Game State
 ////////////////////////////////////////////////////////////
 var renderingCanvas = document.createElement('canvas');
@@ -26,17 +28,20 @@ renderingCanvas.setAttribute('width', zoom(CANVAS_WIDTH) + "px");
 renderingCanvas.setAttribute('height', zoom(CANVAS_HEIGHT) + "px");
 ////////////////////////////////////////////////////////////
 
+
 //'View Window' Canvas
 ////////////////////////////////////////////////////////////
 var canvas = document.getElementById('game');
 var ctx = canvas.getContext('2d');
 ////////////////////////////////////////////////////////////
 
+
 //Connection/Status
 ////////////////////////////////////////////////////////////
 var connectionCount = document.getElementById('connected-users-count');
 var statusMessage = document.getElementById('status');
 ////////////////////////////////////////////////////////////
+
 
 //Draw Class
 ////////////////////////////////////////////////////////////
@@ -72,10 +77,15 @@ ShapeDrawer.prototype = {
 };
 ////////////////////////////////////////////////////////////
 
+
+//Variable Declarations
+////////////////////////////////////////////////////////////
 var shapeDrawer = new ShapeDrawer(renderingCanvas, renderingContext);
 var zoomLevel = 1.0;
 var gameState = {};
 var keysPressed = {};
+////////////////////////////////////////////////////////////
+
 
 //Key Press Listeners
 ////////////////////////////////////////////////////////////
@@ -114,20 +124,22 @@ socket.on('playerInitialized', function() {
 ////////////////////////////////////////////////////////////
 
 
-//Game Loop
+//User Key Input Loop
 ////////////////////////////////////////////////////////////
 function socketLoop(){
   socket.send('keysPressed', keysPressed);
 }
+////////////////////////////////////////////////////////////
 
+
+//Game Loop
+////////////////////////////////////////////////////////////
 function gameLoop() {
   try {
     var currentPlayer = findPlayer(socket.id);
 
     zoomLevel = 1.0 - (currentPlayer.mass / 450);
-       if (zoomLevel < 0.25) {
-         zoomLevel = 0.25;
-       }
+    if (zoomLevel < 0.25) { zoomLevel = 0.25; }
 
     renderingCanvas.setAttribute('width', zoom(CANVAS_WIDTH) + "px");
     renderingCanvas.setAttribute('height', zoom(CANVAS_HEIGHT) + "px");
@@ -135,54 +147,17 @@ function gameLoop() {
     renderingContext.clearRect(0, 0, zoom(renderingCanvas.width), zoom(renderingCanvas.height));
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-
-    if(typeof gameState.players !== "undefined"){
-      for(var i = 0; i < gameState.players.length; i++) {
-        shapeDrawer.drawPlayer(gameState.players[i]);
-      }
-      for(var j = 0; j < gameState.food.length; j++) {
-        shapeDrawer.drawFood(gameState.food[j]);
-      }
-      for(var k = 0; k < gameState.boosts.length; k++) {
-        shapeDrawer.drawFood(gameState.boosts[k]);
-      }
-      for(var l = 0; l < gameState.viruses.length; l++) {
-        shapeDrawer.drawFood(gameState.viruses[l]);
-      }
-      //Define 'View Window' Start Point (Top Left Corner)
-      ////////////////////////////////////////////////////////////
-      if(typeof currentPlayer !== 'undefined') {
-        var topLeftX = zoom(currentPlayer.x) - (CANVAS_WIDTH/8);
-        var topLeftY = zoom(currentPlayer.y) - (CANVAS_HEIGHT/8);
-
-        if (topLeftX < 0) {
-          topLeftX = 0;
-        }
-        if (topLeftY < 0) {
-          topLeftY = 0;
-        }
-        if (topLeftX + 500 > zoom(CANVAS_WIDTH)) {
-          topLeftX = zoom(CANVAS_WIDTH) - 500;
-        }
-        if (topLeftY + 500 > zoom(CANVAS_HEIGHT)) {
-          topLeftY = zoom(CANVAS_HEIGHT) - 500;
-        }
-
-        ctx.drawImage(renderingCanvas, topLeftX, topLeftY, 500, 500, 0, 0, 500, 500);
-      }
-      ////////////////////////////////////////////////////////////
-    }
-
+    drawGameState(currentPlayer);
+    drawViewWindow(currentPlayer);
   }
   catch(ex){
-    console.log("exception hit: ", ex);
+    console.log("Exception: ", ex);
   }
   finally {
     requestAnimationFrame(gameLoop);
   }
 }
 ////////////////////////////////////////////////////////////
-
 
 
 //Find a Player by socketID
@@ -201,5 +176,42 @@ function findPlayer(socketID) {
 ////////////////////////////////////////////////////////////
 function zoom(value) {
   return value * zoomLevel;
+}
+////////////////////////////////////////////////////////////
+
+
+//Draw Game State
+////////////////////////////////////////////////////////////
+function drawGameState(currentPlayer) {
+  if(typeof gameState.players !== "undefined"){
+    for(var i = 0; i < gameState.players.length; i++) {
+      shapeDrawer.drawPlayer(gameState.players[i]);
+    }
+    for(var j = 0; j < gameState.food.length; j++) {
+      shapeDrawer.drawFood(gameState.food[j]);
+    }
+    for(var k = 0; k < gameState.boosts.length; k++) {
+      shapeDrawer.drawFood(gameState.boosts[k]);
+    }
+    for(var l = 0; l < gameState.viruses.length; l++) {
+      shapeDrawer.drawFood(gameState.viruses[l]);
+    }
+  }
+}
+////////////////////////////////////////////////////////////
+
+
+//Position and Draw 'View Window' Canvas
+////////////////////////////////////////////////////////////
+function drawViewWindow(currentPlayer) {
+  if(typeof currentPlayer !== 'undefined') {
+    var topLeftX = zoom(currentPlayer.x) - (CANVAS_WIDTH/8);
+    var topLeftY = zoom(currentPlayer.y) - (CANVAS_HEIGHT/8);
+    if (topLeftX < 0) { topLeftX = 0; }
+    if (topLeftY < 0) { topLeftY = 0; }
+    if (topLeftX + 500 > zoom(CANVAS_WIDTH)) { topLeftX = zoom(CANVAS_WIDTH) - 500; }
+    if (topLeftY + 500 > zoom(CANVAS_HEIGHT)) { topLeftY = zoom(CANVAS_HEIGHT) - 500; }
+    ctx.drawImage(renderingCanvas, topLeftX, topLeftY, 500, 500, 0, 0, 500, 500);
+  }
 }
 ////////////////////////////////////////////////////////////

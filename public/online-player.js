@@ -51,7 +51,7 @@ OnlinePlayer.prototype = {
       if(distance < this.mass) {
         food.splice(i, 1);
         this.mass += 1;
-        if (this.speed > 0.8){ this.speed -= 0.015; }
+        if (this.speed > 0.75){ this.speed -= 0.015; }
       }
     }
   },
@@ -81,10 +81,10 @@ OnlinePlayer.prototype = {
   },
 
   resetPlayer: function(){
-    this.mass  = 5;
+    this.mass  = 7;
     this.x     = Math.floor((Math.random() * CANVAS_WIDTH) + 5);
     this.y     = Math.floor((Math.random() * CANVAS_HEIGHT) + 5);
-    this. f = 5;
+    this.speed = 5;
     this.speedBoostTime = null;
   },
 

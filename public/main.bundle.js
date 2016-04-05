@@ -199,7 +199,6 @@
 
 	ShapeDrawer.prototype = {
 	  drawFood: function drawFood(food) {
-	    console.log(food);
 	    this.context.beginPath();
 	    this.context.arc(food.x, food.y, 5, 0, Math.PI * 2);
 	    this.context.fillStyle = food.color;

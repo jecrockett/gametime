@@ -171,18 +171,23 @@ function gameLoop() {
   }
   finally {
     requestAnimationFrame(gameLoop);
-    var leaderBoard = $('.leader-board');
-    $('.player').remove();
-    var b = gameState.players.sort(function(a,b){
-      return b.mass - a.mass;
-    });
-    b.forEach(function(player){
-      leaderBoard.append('<li class="player">' + player.name + '</li>');
-    });
+    appendLeaderBoard(gameState.players);
   }
 }
 ////////////////////////////////////////////////////////////
 
+//Append a leader board to the page
+function appendLeaderBoard(players){
+  var leaderBoard = $('.leader-board');
+  $('.player').remove();
+  var b = players.sort(function(a,b){
+    return b.mass - a.mass;
+  });
+  b.forEach(function(player){
+    leaderBoard.append('<li class="player">' + player.name + '</li>');
+  });
+}
+/////////////////////////////////////////////////////////////////
 
 
 //Find a Player by socketID

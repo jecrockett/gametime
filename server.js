@@ -97,7 +97,7 @@ function deletePlayer(socketID) {
   for(var i = 0; i < players.length; i++) {
     if (players[i].id === socketID) {
       console.log('Disconnected player: ' + players[i].name);
-      players = players.splice(i, 1);
+      players.splice(i, 1);
     }
   }
 }

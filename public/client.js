@@ -11,6 +11,7 @@ $('#submit-info').on('click', function(){
   var info = [username, color];
   socket.send('userInfo', info);
   $('#game').removeClass('hidden');
+  $('.leader-board').removeClass('hidden');
   $('.player-info').addClass('hidden');
 });
 
@@ -170,6 +171,14 @@ function gameLoop() {
   }
   finally {
     requestAnimationFrame(gameLoop);
+    var leaderBoard = $('.leader-board');
+    $('.player').remove();
+    var b = gameState.players.sort(function(a,b){
+      return b.mass - a.mass;
+    });
+    b.forEach(function(player){
+      leaderBoard.append('<li class="player">' + player.name + '</li>');
+    });
   }
 }
 ////////////////////////////////////////////////////////////

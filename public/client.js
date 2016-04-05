@@ -106,7 +106,7 @@ function socketLoop(){
 
 function gameLoop() {
   try {
-    currentPlayer = findPlayer(socket.id);
+    var currentPlayer = findPlayer(socket.id);
     
     zoomLevel = 1.0 - (currentPlayer.mass / 450);
     renderingCanvas.setAttribute('width', zoom(CANVAS_WIDTH) + "px");

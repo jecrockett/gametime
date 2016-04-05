@@ -53,7 +53,6 @@ ShapeDrawer.prototype = {
   },
 
   drawPlayer: function(player) {
-console.log(player)
     this.context.beginPath();
     this.context.arc(zoom(player.x), zoom(player.y), zoom(player.mass), 0, Math.PI * 2);
     this.context.fillStyle = player.color;

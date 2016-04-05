@@ -66,7 +66,11 @@ ShapeDrawer.prototype = {
     this.context.fillStyle = player.color;
     this.context.fill();
 
-    var fontSize = Math.floor(18/((1.0 - (player.mass / 450))));
+    if((1.0 - (player.mass / 450) > 0.25)) {
+      var fontSize = Math.floor(18/((1.0 - (player.mass / 450))));
+    } else {
+      var fontSize = Math.floor(18/(0.25));
+    }
     this.context.textAlign = 'center';
     this.context.fillStyle = 'white';
     this.context.font = fontSize + 'px impact';

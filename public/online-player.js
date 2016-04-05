@@ -29,18 +29,10 @@ function OnlinePlayer(id, name, x, y, color) {
 
 OnlinePlayer.prototype = {
   move: function(keysPressed) {
-    if (keysPressed[65] && this.canMoveLeft()) {
-      this.moveLeft();
-    }
-    if (keysPressed[68] && this.canMoveRight()) {
-      this.moveRight();
-    }
-    if (keysPressed[83] && this.canMoveDown()) {
-      this.moveDown();
-    }
-    if (keysPressed[87] && this.canMoveUp()) {
-      this.moveUp();
-    }
+    if (keysPressed[65] && this.canMoveLeft()) { this.moveLeft(); }
+    if (keysPressed[68] && this.canMoveRight()) { this.moveRight(); }
+    if (keysPressed[83] && this.canMoveDown()) { this.moveDown(); }
+    if (keysPressed[87] && this.canMoveUp()) { this.moveUp(); }
   },
 
   eatFood: function(food) {
@@ -128,35 +120,19 @@ OnlinePlayer.prototype = {
 
   movePlayer1: function() {
     if (this.isPlayer1()) {
-      if (this.attemptsValidMoveLeft('P1LEFT')) {
-        this.moveLeft();
-      }
-      if (this.attemptsValidMoveRight('P1RIGHT')) {
-        this.moveRight();
-      }
-      if (this.attemptsValidMoveUp('P1UP')) {
-        this.moveUp();
-      }
-      if (this.attemptsValidMoveDown('P1DOWN')) {
-        this.moveDown();
-      }
+      if (this.attemptsValidMoveLeft('P1LEFT')) { this.moveLeft(); }
+      if (this.attemptsValidMoveRight('P1RIGHT')) { this.moveRight(); }
+      if (this.attemptsValidMoveUp('P1UP')) { this.moveUp(); }
+      if (this.attemptsValidMoveDown('P1DOWN')) { this.moveDown(); }
     }
   },
 
   movePlayer2: function() {
     if (this.isPlayer2()) {
-      if (this.attemptsValidMoveLeft('P2LEFT')) {
-        this.moveLeft();
-      }
-      if (this.attemptsValidMoveRight('P2RIGHT')) {
-        this.moveRight();
-      }
-      if (this.attemptsValidMoveUp('P2UP')) {
-        this.moveUp();
-      }
-      if (this.attemptsValidMoveDown('P2DOWN')) {
-        this.moveDown();
-      }
+      if (this.attemptsValidMoveLeft('P2LEFT')) { this.moveLeft(); }
+      if (this.attemptsValidMoveRight('P2RIGHT')) { this.moveRight(); }
+      if (this.attemptsValidMoveUp('P2UP')) { this.moveUp(); }
+      if (this.attemptsValidMoveDown('P2DOWN')) { this.moveDown(); }
     }
   },
 

@@ -65,12 +65,12 @@ ShapeDrawer.prototype = {
     this.context.arc(zoom(player.x), zoom(player.y), zoom(player.mass), 0, Math.PI * 2);
     this.context.fillStyle = player.color;
     this.context.fill();
+    var fontSize = Math.floor(18/((1.0 - (player.mass / 450))));
 
-    if((1.0 - (player.mass / 450) > 0.25)) {
-      var fontSize = Math.floor(18/((1.0 - (player.mass / 450))));
-    } else {
-      var fontSize = Math.floor(18/(0.25));
+    if((1.0 - (player.mass / 450) < 0.65)) {
+      fontSize = Math.floor(18/(0.65));
     }
+    console.log(fontSize);
     this.context.textAlign = 'center';
     this.context.fillStyle = 'white';
     this.context.font = fontSize + 'px impact';

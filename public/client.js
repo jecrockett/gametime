@@ -55,7 +55,6 @@ ShapeDrawer.prototype = {
   drawPlayer: function(player) {
     this.context.beginPath();
     this.context.arc(zoom(player.x), zoom(player.y), zoom(player.mass), 0, Math.PI * 2);
-    console.log(player, player.color);
     this.context.fillStyle = player.color;
     this.context.fill();
     return player;

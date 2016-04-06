@@ -38,21 +38,21 @@ describe('GamePackager', function(){
 
   context('packagePlayers', function(){
     it('reduces online-player and returns simplified object', function(){
-      var player1 = new OnlinePlayer('id1', 'name1', 150, 160, 'blue');
-      var player2 = new OnlinePlayer('id2', 'name2', 250, 260, 'red');
+      var player1 = new OnlinePlayer('id1', 'name1', 150, 160);
+      var player2 = new OnlinePlayer('id2', 'name2', 250, 260);
       var players = [player1, player2];
-      
+
       var gamePackager = new GamePackager();
       var basePlayers = gamePackager.packagePlayers(players);
+
 
       assert.equal(basePlayers.length, 2);
       assert.equal(basePlayers[0].id, 'id1');
       assert.equal(basePlayers[0].name, 'name1');
-      console.log(basePlayers);
       assert.equal(basePlayers[0].x, 150);
       assert.equal(basePlayers[0].y, 160);
       assert.isAbove(basePlayers[0].mass, 0);
-      assert.equal(basePlayers[0].color, 'blue');
+      assert.equal(basePlayers[0].color, 'white');
 
       assert.isUndefined(basePlayers[0].speed);
       assert.isUndefined(basePlayers[0].speedBoostTime);

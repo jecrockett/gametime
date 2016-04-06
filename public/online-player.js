@@ -89,7 +89,7 @@ OnlinePlayer.prototype = {
          (players[i] !== this) &&
          (this.mass * 0.9 > players[i].mass)){
            this.mass = this.mass + (players[i].mass/2);
-           this.speed = this.speed - ((players[i].mass/2) * 0.02);
+           this.speed = this.speed - ((players[i].mass/2) * 0.015);
            players[i].resetPlayer();
       }
     }

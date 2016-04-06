@@ -10,8 +10,8 @@ const Virus = require('../lib/virus');
 describe('GamePackager', function(){
   context('buildGameState', function(){
     it('compiles and returns game state object', function(){
-      var player1 = new OnlinePlayer('id1', 'name1', 150, 150, 'blue');
-      var player2 = new OnlinePlayer('id2', 'name2', 250, 250, 'red');
+      var player1 = new OnlinePlayer('id1', 'name1', 150, 150);
+      var player2 = new OnlinePlayer('id2', 'name2', 250, 250);
       var players = [player1, player2];
       var allFood = [new Food({x: 100, y: 200}), new Food({x: 50, y: 75})];
       var allBoosts = [new Food({x: 100, y: 200}), new Food({x: 50, y: 75})];

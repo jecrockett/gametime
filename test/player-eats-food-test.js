@@ -39,8 +39,9 @@ describe('Player eating food', function(){
     assert.equal(player.speed, 5);
 
     player.eatFood(foodArray);
+    player.updateSpeed();
 
-    assert.equal(player.speed, 4.98);
+    assert.equal(player.speed, 4.985);
   });
 
   it('cannot skip over food at starting speed', function(){

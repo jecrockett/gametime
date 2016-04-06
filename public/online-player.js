@@ -43,7 +43,6 @@ OnlinePlayer.prototype = {
       if(distance < this.mass) {
         food.splice(i, 1);
         this.mass += 1;
-        if (this.speed > 0.75){ this.speed -= 0.02; }
       }
     }
   },
@@ -89,12 +88,10 @@ OnlinePlayer.prototype = {
          (players[i] !== this) &&
          (this.mass * 0.9 > players[i].mass)){
            this.mass = this.mass + (players[i].mass/2);
-           this.speed = this.speed - ((players[i].mass/2) * 0.015);
            players[i].resetPlayer();
       }
     }
   },
-
 
   resetBoosts: function() {
     if(this.speedBoostTime < (Date.now() - 1200)) {
@@ -116,6 +113,11 @@ OnlinePlayer.prototype = {
 
   canMoveDown: function(){
     return (this.y + this.mass < CANVAS_HEIGHT);
+  },
+
+  updateSpeed: function(){
+    this.speed = 5 - ((this.mass - 7) * 0.015);
+    if (this.speed < 0.75) { this.speed = 0.75 };
   }
 };
 

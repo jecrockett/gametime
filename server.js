@@ -97,6 +97,7 @@ function updatePlayerActions(channel, message, socket){
   if (channel === 'keysPressed') {
     var player = findPlayer(socket.id);
     if(typeof player !== "undefined"){
+      player.updateSpeed();
       player.resetBoosts();
       player.move(message);
       player.eatFood.call(player, food);

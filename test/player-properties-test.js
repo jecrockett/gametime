@@ -1,45 +1,58 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const Player = require('../lib/player');
-const KeyTracker = require('../lib/keyboard-tracker');
+const Player = require('../public/online-player');
 
 describe('Player', function(){
-  context('Assigned player properties', function(){
-    it('player name is correctly assigned', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player = new Player("Joe", 10, 10, 5, keyTracker);
-      assert.equal(player.name, "Joe", "Name is not the assigned name Joe");
+  context('Player properties', function(){
+    it('assigns the player a name', function(){
+      var player = new Player("id", "Joe", 10, 10);
+      assert.equal(player.name, "Joe", "Name is not correctly assigned");
     });
 
-    it('player coordinates are correctly assigned', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player = new Player("Joe", 10, 15, 5, keyTracker);
-      assert.equal(player.x, 10, "x coordinate is not the assigned value of 10");
-      assert.equal(player.y, 15, "y coordinate is not the assigned value of 15");
+    it('assigns player coordinates', function(){
+      var player = new Player("id", "Joe", 10, 15);
+      assert.equal(player.x, 10, "x coordinate is not correctly assigned.");
+      assert.equal(player.y, 15, "y coordinate is not correctly assigned.");
     });
 
-    it('player mass is correctly assigned', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player = new Player("Joe", 10, 10, 9, keyTracker);
-      assert.equal(player.mass, 9, "Mass is not the assigned value of of 9");
+    it('assigns the player id', function(){
+      var player = new Player("id", "Joe", 10, 10);
+      assert.equal(player.id, "id", "ID is not correctly assigned.");
     });
 
-    it('player mass defaults to 5 if unassigned', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player = new Player("Joe", 10, 10, null, keyTracker);
-      assert.equal(player.mass, 5, "Mass is not the default value of of 5");
+    it('player color defaults to white', function(){
+      var player = new Player("id", "Joe", 10, 10);
+      assert.equal(player.color, "white", "Default color is not correctly assigned.");
     });
 
-    it('player keyTracker is correctly assigned', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player = new Player("Joe", 10, 10, 5, keyTracker);
-      assert.isDefined(player.keyTracker, "keyTracker is undefined");
+    it('player speedBoostTime defaults to null', function(){
+      var player = new Player("id", "Joe", 10, 10);
+      assert.equal(player.speedBoostTime, null, "Default speedBoostTime is not correctly assigned.");
     });
-  });    
+  });
+
+  context('Resetting player propterties after being eaten', function() {
+    it('resets properties to default values', function() {
+      var player = new Player("id", "Joe", 0, 0);
+      var time = Date.now();
+      player.mass = 100;
+      player.speed = 2;
+      this.speedBoostTime = time;
+
+      player.resetPlayer();
+
+      assert.notEqual(player.x, 10);
+      assert.notEqual(player.y, 10);
+
+      assert.notEqual(player.mass, 100);
+      assert.equal(player.mass, 7);
+
+      assert.notEqual(player.speed, 2);
+      assert.equal(player.speed, 5);
+
+      assert.notEqual(player.speedBoostTime, time);
+      assert.equal(player.speedBoostTime, null);
+    });
+  });
 });

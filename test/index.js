@@ -1,8 +1,10 @@
 require('./food-test');
+require('./speed-boost-test');
+require('./virus-test');
+require('./game-packager-test');
 require('./food-generator-test');
-require('./shape-drawer-test');
 require('./player-properties-test');
 require('./player-movements-test');
 require('./player-eats-food-test');
-require('./players-eat-each-other-test')
-require('./player-eat-size-speed-relationship-test');
+require('./player-eats-speed-boost-test');
+require('./players-eats-player-test');

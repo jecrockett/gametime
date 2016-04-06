@@ -47,9 +47,9 @@
 	'use strict';
 
 	var FoodGenerator = __webpack_require__(1);
-	var ShapeDrawer = __webpack_require__(4);
-	var Player = __webpack_require__(5);
-	var KeyTracker = __webpack_require__(6);
+	var ShapeDrawer = __webpack_require__(5);
+	var Player = __webpack_require__(6);
+	var KeyTracker = __webpack_require__(7);
 
 	var canvas = document.getElementById('game');
 	var ctx = canvas.getContext('2d');
@@ -96,6 +96,7 @@
 
 	var Food = __webpack_require__(2);
 	var SpeedBoost = __webpack_require__(3);
+	var Virus = __webpack_require__(4);
 
 	function FoodGenerator(width, height) {
 	  this.canvasWidth = width;
@@ -105,7 +106,7 @@
 	FoodGenerator.prototype = {
 	  seedFood: function seedFood(players) {
 	    var food = [];
-	    for (var i = 0; i < 250; i++) {
+	    for (var i = 0; i < 200; i++) {
 	      var foodItem = new Food(this.randOnCanvas(players));
 	      food.push(foodItem);
 	    }
@@ -121,6 +122,14 @@
 	    return speedBoosts;
 	  },
 
+	  seedViruses: function seedViruses(players) {
+	    var viruses = [];
+	    for (var i = 0; i < 8; i++) {
+	      viruses.push(new Virus(this.randOnCanvas(players)));
+	    }
+	    return viruses;
+	  },
+
 	  randOnCanvas: function randOnCanvas(players) {
 	    var newCoords = { x: Math.floor(Math.random() * (this.canvasWidth - 10) + 5),
 	      y: Math.floor(Math.random() * (this.canvasHeight - 10) + 5) };
@@ -132,7 +141,7 @@
 	      var xDiff = newCoords.x - player.x;
 	      var yDiff = newCoords.y - player.y;
 	      var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	      return distance > player.mass + 15;
+	      return distance > player.mass + 20;
 	    }
 
 	    while (isNotInsidePlayer === false) {
@@ -145,13 +154,16 @@
 	    return newCoords;
 	  },
 
-	  replaceFood: function replaceFood(allFood, speedBoosts, players) {
-	    while (allFood.length < 250) {
+	  replaceFood: function replaceFood(allFood, speedBoosts, players, viruses) {
+	    while (allFood.length < 200) {
 	      var foodItem = new Food(this.randOnCanvas(players));
 	      allFood.push(foodItem);
 	    }
 	    while (speedBoosts.length < 15) {
 	      speedBoosts.push(new SpeedBoost(this.randOnCanvas(players)));
+	    }
+	    while (viruses.length < 8) {
+	      viruses.push(new Virus(this.randOnCanvas(players)));
 	    }
 	  }
 	};
@@ -167,6 +179,7 @@
 	function Food(coords) {
 	  this.x = coords.x;
 	  this.y = coords.y;
+	  this.mass = 5;
 	  this.color = 'black';
 	}
 
@@ -181,6 +194,7 @@
 	function SpeedBoost(coords) {
 	  this.x = coords.x;
 	  this.y = coords.y;
+	  this.mass = 10;
 	  this.color = '#42c32e';
 	}
 
@@ -192,176 +206,196 @@
 
 	'use strict';
 
-	function ShapeDrawer(canvas, context) {
-	  this.canvas = canvas;
-	  this.context = context;
+	function Virus(coords) {
+	  this.x = coords.x;
+	  this.y = coords.y;
+	  this.mass = 20;
+	  this.color = 'red';
 	}
 
-	ShapeDrawer.prototype = {
-	  drawFood: function drawFood(food) {
-	    this.context.beginPath();
-	    this.context.arc(food.x, food.y, 5, 0, Math.PI * 2);
-	    this.context.fillStyle = food.color;
-	    this.context.fill();
-	    return this;
-	  },
-
-	  drawPlayer: function drawPlayer(player) {
-	    this.context.beginPath();
-	    this.context.arc(player.x, player.y, player.mass, 0, Math.PI * 2);
-	    this.context.fillStyle = 'royalblue';
-	    this.context.fill();
-	    return player;
-	  }
-	};
-
-	module.exports = ShapeDrawer;
+	module.exports = Virus;
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
-	function Player(name, x, y, keyTracker) {
-	  this.name = name;
-	  this.x = x;
-	  this.y = y;
-	  this.mass = 5;
-	  this.speed = 5;
-	  this.keyTracker = keyTracker;
-	  this.speedBoostTime = null;
-	  this.movePlayer = function (xOffset, yOffset) {
-	    if (this.speedBoostTime !== null) {
-	      this.x += xOffset * (this.speed * 2);
-	      this.y += yOffset * (this.speed * 2);
-	    } else {
-	      this.x += xOffset * this.speed;
-	      this.y += yOffset * this.speed;
-	    }
-	  };
-
-	  this.moveLeft = this.movePlayer.bind(this, -1, 0);
-	  this.moveRight = this.movePlayer.bind(this, 1, 0);
-	  this.moveUp = this.movePlayer.bind(this, 0, -1);
-	  this.moveDown = this.movePlayer.bind(this, 0, 1);
-	}
-
-	Player.prototype = {
-	  move: function move() {
-	    this.movePlayer1(this.speed);
-	    this.movePlayer2(this.speed);
-	    return this;
-	  },
-
-	  eatFood: function eatFood(food) {
-	    for (var i = 0; i < food.length; i++) {
-	      var xDiff = this.x - food[i].x;
-	      var yDiff = this.y - food[i].y;
-	      var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	      if (distance < this.mass) {
-	        food.splice(i, 1);
-	        this.mass += 1;
-	        if (this.speed > 1.0) {
-	          this.speed -= 0.003;
-	        }
-	      }
-	    }
-	  },
-
-	  eatBoosts: function eatBoosts(boosts) {
-	    for (var i = 0; i < boosts.length; i++) {
-	      var xDiff = this.x - boosts[i].x;
-	      var yDiff = this.y - boosts[i].y;
-	      var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	      if (distance < this.mass) {
-	        boosts.splice(i, 1);
-	        this.speedBoostTime = Date.now();
-	      }
-	    }
-	  },
-
-	  eatPlayer: function eatPlayer(players) {
-	    for (var i = 0; i < players.length; i++) {
-	      var xDiff = this.x - players[i].x;
-	      var yDiff = this.y - players[i].y;
-	      var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	      if (distance < this.mass * 0.8 && players[i] !== this && this.mass * 0.8 > players[i].mass) {
-	        this.mass = this.mass + players[i].mass;
-	        players.splice(i, 1);
-	      }
-	    }
-	  },
-
-	  resetSpeedBoost: function resetSpeedBoost() {
-	    if (this.speedBoostTime < Date.now() - 1200) {
-	      this.speedBoostTime = null;
-	    }
-	  },
-
-	  movePlayer1: function movePlayer1() {
-	    if (this.isPlayer1()) {
-	      if (this.attemptsValidMoveLeft('P1LEFT')) {
-	        this.moveLeft();
-	      }
-	      if (this.attemptsValidMoveRight('P1RIGHT')) {
-	        this.moveRight();
-	      }
-	      if (this.attemptsValidMoveUp('P1UP')) {
-	        this.moveUp();
-	      }
-	      if (this.attemptsValidMoveDown('P1DOWN')) {
-	        this.moveDown();
-	      }
-	    }
-	  },
-
-	  movePlayer2: function movePlayer2() {
-	    if (this.isPlayer2()) {
-	      if (this.attemptsValidMoveLeft('P2LEFT')) {
-	        this.moveLeft();
-	      }
-	      if (this.attemptsValidMoveRight('P2RIGHT')) {
-	        this.moveRight();
-	      }
-	      if (this.attemptsValidMoveUp('P2UP')) {
-	        this.moveUp();
-	      }
-	      if (this.attemptsValidMoveDown('P2DOWN')) {
-	        this.moveDown();
-	      }
-	    }
-	  },
-
-	  isPlayer1: function isPlayer1() {
-	    return this.name === 'Player 1';
-	  },
-
-	  isPlayer2: function isPlayer2() {
-	    return this.name === 'Player 2';
-	  },
-
-	  attemptsValidMoveLeft: function attemptsValidMoveLeft(key) {
-	    return this.keyTracker.isPressed(this.keyTracker.keys[key]) && this.keyTracker.canMoveLeft(this);
-	  },
-
-	  attemptsValidMoveRight: function attemptsValidMoveRight(key) {
-	    return this.keyTracker.isPressed(this.keyTracker.keys[key]) && this.keyTracker.canMoveRight(this);
-	  },
-
-	  attemptsValidMoveUp: function attemptsValidMoveUp(key) {
-	    return this.keyTracker.isPressed(this.keyTracker.keys[key]) && this.keyTracker.canMoveUp(this);
-	  },
-
-	  attemptsValidMoveDown: function attemptsValidMoveDown(key) {
-	    return this.keyTracker.isPressed(this.keyTracker.keys[key]) && this.keyTracker.canMoveDown(this);
-	  }
-	};
-
-	module.exports = Player;
+	// function ShapeDrawer(canvas, context) {
+	//   this.canvas = canvas;
+	//   this.context = context;
+	// }
+	//
+	// ShapeDrawer.prototype = {
+	//   drawFood: function(food) {
+	//     console.log(food);
+	//     this.context.beginPath();
+	//     this.context.arc(food.x, food.y, 5, 0, Math.PI * 2);
+	//     this.context.fillStyle = food.color;
+	//     this.context.fill();
+	//     return this;
+	//   },
+	//
+	//   drawPlayer: function(player) {
+	//     this.context.beginPath();
+	//     this.context.arc(player.x, player.y, player.mass, 0, Math.PI * 2);
+	//     this.context.fillStyle = 'royalblue';
+	//     this.context.fill();
+	//     return player;
+	//   }
+	// };
+	//
+	// module.exports = ShapeDrawer;
 
 /***/ },
 /* 6 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	// function Player(name, x, y, keyTracker) {
+	//   this.name = name;
+	//   this.x    = x;
+	//   this.y    = y;
+	//   this.mass = 5;
+	//   this.speed = 5;
+	//   this.keyTracker = keyTracker;
+	//   this.speedBoostTime = null;
+	//   this.movePlayer = function(xOffset, yOffset) {
+	//     if (this.speedBoostTime !== null) {
+	//       this.x += xOffset * (this.speed * 2);
+	//       this.y += yOffset * (this.speed * 2);
+	//     } else {
+	//       this.x += xOffset * this.speed;
+	//       this.y += yOffset * this.speed;
+	//     }
+	//   };
+	//
+	//   this.moveLeft = this.movePlayer.bind(this, -1, 0);
+	//   this.moveRight = this.movePlayer.bind(this, 1, 0);
+	//   this.moveUp = this.movePlayer.bind(this, 0, -1);
+	//   this.moveDown = this.movePlayer.bind(this, 0, 1);
+	// }
+	//
+	// Player.prototype = {
+	//   move: function() {
+	//     this.movePlayer1(this.speed);
+	//     this.movePlayer2(this.speed);
+	//     return this;
+	//   },
+	//
+	//   eatFood: function(food) {
+	//     for(var i = 0; i < food.length; i++) {
+	//       var xDiff = this.x - food[i].x;
+	//       var yDiff = this.y - food[i].y;
+	//       var distance = Math.sqrt( xDiff*xDiff + yDiff*yDiff );
+	//       if(distance < this.mass) {
+	//         food.splice(i, 1);
+	//         this.mass += 1;
+	//         if (this.speed > 1.0){ this.speed -= 0.003; }
+	//       }
+	//     }
+	//   },
+	//
+	//   eatBoosts: function(boosts) {
+	//     for(var i = 0; i < boosts.length; i++) {
+	//       var xDiff = this.x - boosts[i].x;
+	//       var yDiff = this.y - boosts[i].y;
+	//       var distance = Math.sqrt( xDiff*xDiff + yDiff*yDiff );
+	//       if(distance < this.mass) {
+	//         boosts.splice(i, 1);
+	//         this.speedBoostTime = Date.now();
+	//       }
+	//     }
+	//   },
+	//
+	//   eatPlayer: function(players){
+	//     for(var i = 0; i < players.length; i++) {
+	//       var xDiff = this.x - players[i].x;
+	//       var yDiff = this.y - players[i].y;
+	//       var distance = Math.sqrt( xDiff*xDiff + yDiff*yDiff);
+	//       if((distance < this.mass * 0.8) &&
+	//          (players[i] !== this) &&
+	//          (this.mass * 0.8 > players[i].mass)) {
+	//           this.mass = this.mass + players[i].mass;
+	//           players.splice(i, 1);
+	//       }
+	//     }
+	//   },
+	//
+	//   resetSpeedBoost: function() {
+	//     if(this.speedBoostTime < (Date.now() - 1200)) {
+	//       this.speedBoostTime = null;
+	//     }
+	//   },
+	//
+	//   movePlayer1: function() {
+	//     if (this.isPlayer1()) {
+	//       if (this.attemptsValidMoveLeft('P1LEFT')) {
+	//         this.moveLeft();
+	//       }
+	//       if (this.attemptsValidMoveRight('P1RIGHT')) {
+	//         this.moveRight();
+	//       }
+	//       if (this.attemptsValidMoveUp('P1UP')) {
+	//         this.moveUp();
+	//       }
+	//       if (this.attemptsValidMoveDown('P1DOWN')) {
+	//         this.moveDown();
+	//       }
+	//     }
+	//   },
+	//
+	//   movePlayer2: function() {
+	//     if (this.isPlayer2()) {
+	//       if (this.attemptsValidMoveLeft('P2LEFT')) {
+	//         this.moveLeft();
+	//       }
+	//       if (this.attemptsValidMoveRight('P2RIGHT')) {
+	//         this.moveRight();
+	//       }
+	//       if (this.attemptsValidMoveUp('P2UP')) {
+	//         this.moveUp();
+	//       }
+	//       if (this.attemptsValidMoveDown('P2DOWN')) {
+	//         this.moveDown();
+	//       }
+	//     }
+	//   },
+	//
+	//   isPlayer1: function() {
+	//     return this.name === 'Player 1';
+	//   },
+	//
+	//   isPlayer2: function() {
+	//     return this.name === 'Player 2';
+	//   },
+	//
+	//   attemptsValidMoveLeft: function(key) {
+	//     return (this.keyTracker.isPressed(this.keyTracker.keys[key]) &&
+	//             this.keyTracker.canMoveLeft(this));
+	//   },
+	//
+	//   attemptsValidMoveRight: function(key) {
+	//     return (this.keyTracker.isPressed(this.keyTracker.keys[key]) &&
+	//             this.keyTracker.canMoveRight(this));
+	//   },
+	//
+	//   attemptsValidMoveUp: function(key) {
+	//     return (this.keyTracker.isPressed(this.keyTracker.keys[key]) &&
+	//             this.keyTracker.canMoveUp(this));
+	//   },
+	//
+	//   attemptsValidMoveDown: function(key) {
+	//     return (this.keyTracker.isPressed(this.keyTracker.keys[key]) &&
+	//         this.keyTracker.canMoveDown(this));
+	//   }
+	// };
+	//
+	// module.exports = Player;
+
+/***/ },
+/* 7 */
 /***/ function(module, exports) {
 
 	"use strict";

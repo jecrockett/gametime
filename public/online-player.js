@@ -1,5 +1,5 @@
-var CANVAS_WIDTH = 2000;
-var CANVAS_HEIGHT = 2000;
+var CANVAS_WIDTH = 4500;
+var CANVAS_HEIGHT = 3000;
 
 function OnlinePlayer(id, name, x, y) {
   this.id   = id;
@@ -117,7 +117,7 @@ OnlinePlayer.prototype = {
 
   updateSpeed: function(){
     this.speed = 5 - ((this.mass - 7) * 0.015);
-    if (this.speed < 0.75) { this.speed = 0.75 };
+    if (this.speed < 0.75) { this.speed = 0.75; }
   }
 };
 

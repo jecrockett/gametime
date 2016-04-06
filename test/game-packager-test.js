@@ -10,8 +10,8 @@ const Virus = require('../lib/virus');
 describe('GamePackager', function(){
   context('buildGameState', function(){
     it('compiles and returns game state object', function(){
-      var player1 = new OnlinePlayer('id1', 'name1', 150, 150, 'blue');
-      var player2 = new OnlinePlayer('id2', 'name2', 250, 250, 'red');
+      var player1 = new OnlinePlayer('id1', 'name1', 150, 150);
+      var player2 = new OnlinePlayer('id2', 'name2', 250, 250);
       var players = [player1, player2];
       var allFood = [new Food({x: 100, y: 200}), new Food({x: 50, y: 75})];
       var allBoosts = [new Food({x: 100, y: 200}), new Food({x: 50, y: 75})];
@@ -38,8 +38,8 @@ describe('GamePackager', function(){
 
   context('packagePlayers', function(){
     it('reduces online-player and returns simplified object', function(){
-      var player1 = new OnlinePlayer('id1', 'name1', 150, 160, 'blue');
-      var player2 = new OnlinePlayer('id2', 'name2', 250, 260, 'red');
+      var player1 = new OnlinePlayer('id1', 'name1', 150, 160);
+      var player2 = new OnlinePlayer('id2', 'name2', 250, 260);
       var players = [player1, player2];
       
       var gamePackager = new GamePackager();
@@ -52,7 +52,7 @@ describe('GamePackager', function(){
       assert.equal(basePlayers[0].x, 150);
       assert.equal(basePlayers[0].y, 160);
       assert.isAbove(basePlayers[0].mass, 0);
-      assert.equal(basePlayers[0].color, 'blue');
+      assert.equal(basePlayers[0].color, 'white');
 
       assert.isUndefined(basePlayers[0].speed);
       assert.isUndefined(basePlayers[0].speedBoostTime);

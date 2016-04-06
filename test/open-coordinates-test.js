@@ -19,11 +19,16 @@ describe('OpenCoordinates', function(){
         var openCoords = openCoordMaker.create(players);
         coords.push(openCoords);
       }
-
       coords.forEach(function(singleCoord){
-        assert.notEqual(singleCoord, playerCoords);
-        assert.notEqual(singleCoord, player2Coords);
+        var x1Diff = singleCoord.x - player.x;
+        var y1Diff = singleCoord.y - player.y;
+        var distance = Math.sqrt( x1Diff*x1Diff + y1Diff*y1Diff);
+        assert(distance > (player.mass + 20), "coordinates are inside player");
+        var x2Diff = singleCoord.x - player2.x;
+        var y2Diff = singleCoord.y - player2.y;
+        var distance2 = Math.sqrt( x2Diff*x2Diff + y2Diff*y2Diff);
+        assert(distance2 > (player2.mass + 20), "coordinates are inside player");
       });
     });
   });
-});
+})

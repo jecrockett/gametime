@@ -17,7 +17,7 @@ describe('FoodGenerator', function(){
     it('creates fifty food items', function(){
       var canvas = { width: 500, height: 400 };
       var foodGen = new FoodGenerator(canvas.width, canvas.height);
-      var player = new Player(1, "J", 5, 5, "black");
+      var player = new Player(1, "J", 5, 5);
       var players = [player];
       assert.lengthOf(foodGen.seedFood(players), 200, "Array of food items is not equal to 200");
     });
@@ -25,7 +25,7 @@ describe('FoodGenerator', function(){
     it('creates random numbers in the correct range', function(){
       var canvas = { width: 500, height: 400 };
       var foodGen = new FoodGenerator(canvas.width, canvas.height);
-      var player = new Player(1, "J", 5, 5, "black");
+      var player = new Player(1, "J", 5, 5);
       var players = [player];
       var coords = foodGen.seedFood(players);
       assert.isAbove(coords[0].x, 4, 'X is > 4');
@@ -39,7 +39,7 @@ describe('FoodGenerator', function(){
     it('creates fifteen speedBoost items', function(){
       var canvas = { width: 500, height: 400 };
       var foodGen = new FoodGenerator(canvas.width, canvas.height);
-      var player = new Player(1, "J", 5, 5, "black");
+      var player = new Player(1, "J", 5, 5);
       var players = [player];
       assert.lengthOf(foodGen.seedSpeedBoosts(players), 15, "Array of speedBoost items is not equal to 15");
     });
@@ -49,7 +49,7 @@ describe('FoodGenerator', function(){
     it('creates eight virus items', function(){
       var canvas = { width: 500, height: 400 };
       var foodGen = new FoodGenerator(canvas.width, canvas.height);
-      var player = new Player(1, "J", 5, 5, "black");
+      var player = new Player(1, "J", 5, 5);
       var players = [player];
       assert.lengthOf(foodGen.seedViruses(players), 8, "Array of virus items is not equal to 8");
     });
@@ -59,7 +59,7 @@ describe('FoodGenerator', function(){
     it('replaces food when the array of food is beneath 200', function(){
       var canvas = { width: 500, height: 400 };
       var foodGen = new FoodGenerator(canvas.width, canvas.height);
-      var player = new Player(1, "J", 5, 5, "black");
+      var player = new Player(1, "J", 5, 5);
       var players = [player];
       var allFood = foodGen.seedFood(players);
       var speedBoosts = foodGen.seedSpeedBoosts(players);

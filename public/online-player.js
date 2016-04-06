@@ -4,11 +4,11 @@ var CANVAS_HEIGHT = 2000;
 function OnlinePlayer(id, name, x, y, color) {
   this.id   = id;
   this.name = name;
-  this.x    = 5;
-  this.y    = 5;
+  this.x    = x;
+  this.y    = y;
   this.mass = 7;
   this.speed = 5;
-  this.color = 'white';
+  this.color = color;
   this.speedBoostTime = null;
 
   this.movePlayer = function(xOffset, yOffset) {

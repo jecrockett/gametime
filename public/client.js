@@ -170,7 +170,8 @@ function appendLeaderBoard(players){
   var leaderBoard = $('.list');
   $('.player').remove();
   players.forEach(function(player){
-    leaderBoard.prepend('<li class="player">' + player.name + '</li>');
+    leaderBoard.prepend('<li class="player">' + player.name +
+                        '(' + player.mass + ')' + '</li>');
   });
 }
 /////////////////////////////////////////////////////////////////

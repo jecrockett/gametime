@@ -1,241 +1,102 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const Player = require('../lib/player');
-const KeyTracker = require('../lib/keyboard-tracker');
+const Player = require('../public/online-player');
 
 describe('Player movement', function(){
-  context('Player 1', function(){
-    it('moves to the left independently', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
+  context('General movement', function(){
+    it('moves to the left when A is pressed', function(){
+      var keysPressed = {65: true};
+      var player = new Player("id", "Player 1", 100, 100);
 
-      assert.equal(player1.x, 10);
-      assert.equal(player2.x, 20);
+      assert.equal(player.x, 100);
 
-      var player1StartXcoor = player1.x
+      var startingX = player.x;
+      player.move(keysPressed);
 
-      keyTracker.keyPressed[65] = true;
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.x, player1StartXcoor - player1.speed);
-      assert.equal(player2.x, 20);
+      assert.equal(player.x, (startingX - player.speed));
     });
 
-    it('moves to the right independently', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
+    it('moves to the right when D is pressed', function(){
+      var keysPressed = {68: true};
+      var player = new Player("id", "Player 1", 100, 100);
 
-      var player1StartXcoor = player1.x
+      assert.equal(player.x, 100);
 
-      assert.equal(player1.x, 10);
-      assert.equal(player2.x, 20);
+      var startingX = player.x;
+      player.move(keysPressed);
 
-      keyTracker.keyPressed[68] = true;
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.x, player1StartXcoor + player1.speed);
-      assert.equal(player2.x, 20);
+      assert.equal(player.x, (startingX + player.speed));
     });
 
-    it('moves up independently', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
+    it('moves up when W is pressed', function(){
+      var keysPressed = {87: true};
+      var player = new Player("id", "Player 1", 100, 100);
 
-      var player1StartYcoor = player1.y
+      assert.equal(player.y, 100);
 
-      assert.equal(player1.y, 10);
-      assert.equal(player2.y, 20);
+      var startingY = player.y;
+      player.move(keysPressed);
 
-      keyTracker.keyPressed[87] = true;
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.y, player1StartYcoor - player1.speed);
-      assert.equal(player2.y, 20);
+      assert.equal(player.y, (startingY - player.speed));
     });
 
-    it('moves down independently', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
+    it('moves down when S is pressed', function(){
+      var keysPressed = {83: true};
+      var player = new Player("id", "Player 1", 100, 100);
 
-      assert.equal(player1.y, 10);
-      assert.equal(player2.y, 20);
+      assert.equal(player.y, 100);
 
-      var player1StartYcoor = player1.y
+      var startingY = player.y;
+      player.move(keysPressed);
 
-      keyTracker.keyPressed[83] = true;
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.y, player1StartYcoor + player1.speed);
-      assert.equal(player2.y, 20);
+      assert.equal(player.y, (startingY + player.speed));
     });
   });
 
-  context('Player 2', function(){
-    it('moves to the left independently', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
+  context('Player circle reaches the edge of the canvas', function(){
+    it("cannot move past the left edge", function() {
+      var keysPressed = {65: true};
+      var player = new Player("id", "Player 1", 7, 100);
+      var canMoveLeft = player.canMoveLeft();
 
-      assert.equal(player1.x, 10);
-      assert.equal(player2.x, 20);
+      player.move(keysPressed);
 
-      var player1StartXcoor = player2.x
-
-      keyTracker.keyPressed[76] = true;
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.x, 10);
-      assert.equal(player2.x, player1StartXcoor - player2.speed);
+      assert.equal(canMoveLeft, false);
+      assert.equal(player.x, 7);
     });
 
-    it('moves to the right independently', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
+    it("cannot move past the right edge", function() {
+      var keysPressed = {68: true};
+      var player = new Player("id", "Player 1", 1993, 100);
+      var canMoveRight = player.canMoveRight();
 
-      assert.equal(player1.x, 10);
-      assert.equal(player2.x, 20);
+      player.move(keysPressed);
 
-      var player1StartXcoor = player2.x
-
-      keyTracker.keyPressed[222] = true;
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.x, 10);
-      assert.equal(player2.x, player1StartXcoor + player2.speed);
+      assert.equal(canMoveRight, false);
+      assert.equal(player.x, 1993);
     });
 
-    it('moves up independently', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
+    it("cannot move past the top edge", function() {
+      var keysPressed = {87: true};
+      var player = new Player("id", "Player 1", 100, 7);
+      var canMoveUp = player.canMoveUp();
 
-      assert.equal(player1.y, 10);
-      assert.equal(player2.y, 20);
+      player.move(keysPressed);
 
-      var player2StartYcoor = player2.y
-
-      keyTracker.keyPressed[80] = true;
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.y, 10);
-      assert.equal(player2.y, player2StartYcoor - player2.speed);
+      assert.equal(canMoveUp, false);
+      assert.equal(player.y, 7);
     });
 
-    it('moves down independently', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, 20, 5, keyTracker);
+    it("cannot move past the bottom edge", function() {
+      var keysPressed = {83: true};
+      var player = new Player("id", "Player 1", 100, 1993);
+      var canMoveDown = player.canMoveDown();
 
-      assert.equal(player1.y, 10);
-      assert.equal(player2.y, 20);
+      player.move(keysPressed);
 
-      var player2StartYcoor = player2.y
-
-      keyTracker.keyPressed[186] = true;
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.y, 10);
-      assert.equal(player2.y, player2StartYcoor + player2.speed);
-    });
-  });
-
-  context('players cannot move beyond the edge of the canvas', function(){
-    it("can not move left when already at the left edge", function() {
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 0, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", 0, 20, 5, keyTracker);
-
-      assert.equal(player1.x, 0);
-      assert.equal(player2.x, 0);
-
-      keyTracker.keyPressed[65] = true;
-      keyTracker.keyPressed[76] = true;
-
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.x, 0);
-      assert.equal(player2.x, 0);
-    });
-
-    it("cannot move right when already at the right edge", function() {
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", canvas.width, 10, 5, keyTracker);
-      let player2 = new Player("Player 2", canvas.width, 20, 5, keyTracker);
-
-      assert.equal(player1.x, canvas.width);
-      assert.equal(player2.x, canvas.width);
-
-      keyTracker.keyPressed[68] = true;
-      keyTracker.keyPressed[222] = true;
-
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.x, canvas.width);
-      assert.equal(player2.x, canvas.width);
-    });
-
-    it("cannot move up when already at the top edge", function() {
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, 0, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, 0, 5, keyTracker);
-
-      assert.equal(player1.y, 0);
-      assert.equal(player2.y, 0);
-
-      keyTracker.keyPressed[87] = true;
-      keyTracker.keyPressed[80] = true;
-
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.y, 0);
-      assert.equal(player2.y, 0);
-    });
-
-    it("cannot move down when already at the bottom edge", function() {
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 10, canvas.height, 5, keyTracker);
-      let player2 = new Player("Player 2", 20, canvas.height, 5, keyTracker);
-
-      assert.equal(player1.y, canvas.height);
-      assert.equal(player2.y, canvas.height);
-
-      keyTracker.keyPressed[83] = true;
-      keyTracker.keyPressed[186] = true;
-
-      player1.move();
-      player2.move();
-
-      assert.equal(player1.y, canvas.height);
-      assert.equal(player2.y, canvas.height);
+      assert.equal(canMoveDown, false);
+      assert.equal(player.y, 1993);
     });
   });
 });

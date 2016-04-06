@@ -12,7 +12,7 @@ function OnlinePlayer(id, name, x, y) {
   this.speedBoostTime = null;
 
   this.movePlayer = function(xOffset, yOffset) {
-    if (this.speedBoostTime !== null) {
+    if (this.speedBoostTime) {
       this.x += xOffset * (this.speed * 2);
       this.y += yOffset * (this.speed * 2);
     } else {
@@ -43,7 +43,7 @@ OnlinePlayer.prototype = {
       if(distance < this.mass) {
         food.splice(i, 1);
         this.mass += 1;
-        if (this.speed > 0.75){ this.speed -= 0.015; }
+        if (this.speed > 0.75){ this.speed -= 0.02; }
       }
     }
   },
@@ -116,52 +116,6 @@ OnlinePlayer.prototype = {
 
   canMoveDown: function(){
     return (this.y + this.mass < CANVAS_HEIGHT);
-  },
-
-  movePlayer1: function() {
-    if (this.isPlayer1()) {
-      if (this.attemptsValidMoveLeft('P1LEFT')) { this.moveLeft(); }
-      if (this.attemptsValidMoveRight('P1RIGHT')) { this.moveRight(); }
-      if (this.attemptsValidMoveUp('P1UP')) { this.moveUp(); }
-      if (this.attemptsValidMoveDown('P1DOWN')) { this.moveDown(); }
-    }
-  },
-
-  movePlayer2: function() {
-    if (this.isPlayer2()) {
-      if (this.attemptsValidMoveLeft('P2LEFT')) { this.moveLeft(); }
-      if (this.attemptsValidMoveRight('P2RIGHT')) { this.moveRight(); }
-      if (this.attemptsValidMoveUp('P2UP')) { this.moveUp(); }
-      if (this.attemptsValidMoveDown('P2DOWN')) { this.moveDown(); }
-    }
-  },
-
-  isPlayer1: function() {
-    return this.name === 'Player 1';
-  },
-
-  isPlayer2: function() {
-    return this.name === 'Player 2';
-  },
-
-  attemptsValidMoveLeft: function(key) {
-    return (this.keyTracker.isPressed(this.keyTracker.keys[key]) &&
-            this.keyTracker.canMoveLeft(this));
-  },
-
-  attemptsValidMoveRight: function(key) {
-    return (this.keyTracker.isPressed(this.keyTracker.keys[key]) &&
-            this.keyTracker.canMoveRight(this));
-  },
-
-  attemptsValidMoveUp: function(key) {
-    return (this.keyTracker.isPressed(this.keyTracker.keys[key]) &&
-            this.keyTracker.canMoveUp(this));
-  },
-
-  attemptsValidMoveDown: function(key) {
-    return (this.keyTracker.isPressed(this.keyTracker.keys[key]) &&
-        this.keyTracker.canMoveDown(this));
   }
 };
 

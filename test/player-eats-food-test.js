@@ -1,63 +1,84 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const Player = require('../lib/player');
-const KeyTracker = require('../lib/keyboard-tracker');
-const Food = require('../lib/food')
+const Player = require('../public/online-player');
+const Food = require('../lib/food');
 
-describe('Player eats food', function(){
-  context('Player 1', function(){
-    it('eats a piece of food if its in range', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 5, 5, 5, keyTracker);
-      var food1 = new Food( { x: 6, y: 6} );
-      var foodArray = [food1]
+describe('Player eating food', function(){
+  it('deletes the food item from the food array', function(){
+    let player = new Player("id", "Joe", 10, 10);
+    var food1 = new Food( { x: 8, y: 8} );
+    var food2 = new Food( { x: 100, y: 100} );
+    var foodArray = [food1, food2];
 
-      assert.equal(foodArray.length, 1)
-      player1.eatFood(foodArray) // the eatFood function checks the area around a player and eats anything in range
-      assert.equal(foodArray.length, 0)
-    });
+    assert.equal(foodArray.length, 2);
 
-    it('does not eat a piece of food if its out of range', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 5, 5, 5, keyTracker);
-      var food1 = new Food( { x: 5, y: 20} );
-      var foodArray = [food1]
+    player.eatFood(foodArray);
 
-      assert.equal(foodArray.length, 1)
-      player1.eatFood(foodArray)
-      assert.equal(foodArray.length, 1)
+    assert.equal(foodArray.length, 1);
+    assert.notInclude(foodArray, food1);
+  });
 
-      keyTracker.keyPressed[83] = true;
-      for(var i = 0; i < 10; i++){
-        player1.move();
-      };
+  it('increases the player mass', function(){
+    let player = new Player("id", "Joe", 10, 10);
+    var food = new Food( { x: 8, y: 8} );
+    var foodArray = [food];
 
-      player1.eatFood(foodArray)
-      assert.equal(foodArray.length, 1)
-    });
+    assert.equal(player.mass, 7);
 
-    it('moves towards food and eats a piece of food if its in range', function(){
-      var canvas = { width: 500, height: 500 };
-      var keyTracker = new KeyTracker(canvas);
-      let player1 = new Player("Player 1", 5, 5, 5, keyTracker);
-      var food1 = new Food( { x: 5, y: 20} );
-      var foodArray = [food1]
+    player.eatFood(foodArray);
 
-      assert.equal(foodArray.length, 1)
-      player1.eatFood(foodArray)
-      assert.equal(foodArray.length, 1)
-      // player1 needs to move 3 times towards the food to have it be in range to eat
-      keyTracker.keyPressed[83] = true;
+    assert.equal(player.mass, 8);
+  });
 
-      for(var i = 0; i < 10; i++){
-        player1.move();
-        player1.eatFood(foodArray)
-      };
+  it('decreases the player speed', function(){
+    let player = new Player("id", "Joe", 10, 10);
+    var food = new Food( { x: 8, y: 8} );
+    var foodArray = [food];
 
-      assert.equal(foodArray.length, 0)
-    });
+    assert.equal(player.speed, 5);
+
+    player.eatFood(foodArray);
+
+    assert.equal(player.speed, 4.98);
+  });
+
+  it('cannot skip over food at starting speed', function(){
+    let player = new Player("id", "Player 1", 27, 20);
+    var keysPressed = {65: true};
+    var food = new Food( { x: (player.x - player.mass), y: player.y} );
+    var foodArray = [food];
+
+    assert.equal(foodArray.length, 1);
+    assert.equal(player.speed, 5);
+
+    player.eatFood(foodArray);
+
+    assert.equal(foodArray.length, 1);
+
+    player.move(keysPressed);
+    player.eatFood(foodArray);
+
+    assert.equal(foodArray.length, 0);
+  });
+
+  it('cannot skip over food at max speed', function(){
+    // max speed is starting speed times two due to a speed boost
+    let player = new Player("id", "Player 1", 27, 20);
+    player.speed = (player.speed * 2);
+    var keysPressed = {65: true};
+    var food = new Food( { x: (player.x - player.mass), y: player.y} );
+    var foodArray = [food];
+
+    assert.equal(foodArray.length, 1);
+
+    player.eatFood(foodArray);
+
+    assert.equal(foodArray.length, 1);
+
+    player.move(keysPressed);
+    player.eatFood(foodArray);
+
+    assert.equal(foodArray.length, 0);
   });
 });

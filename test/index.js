@@ -6,4 +6,5 @@ require('./food-generator-test');
 require('./player-properties-test');
 require('./player-movements-test');
 require('./player-eats-food-test');
-require('./players-eat-each-other-test')
+require('./player-eats-speed-boost-test');
+require('./players-eats-player-test');

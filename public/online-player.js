@@ -1,14 +1,14 @@
 var CANVAS_WIDTH = 2000;
 var CANVAS_HEIGHT = 2000;
 
-function OnlinePlayer(id, name, x, y, color) {
+function OnlinePlayer(id, name, x, y) {
   this.id   = id;
   this.name = name;
   this.x    = x;
   this.y    = y;
   this.mass = 7;
   this.speed = 5;
-  this.color = color;
+  this.color = 'white';
   this.speedBoostTime = null;
 
   this.movePlayer = function(xOffset, yOffset) {
@@ -89,7 +89,7 @@ OnlinePlayer.prototype = {
          (players[i] !== this) &&
          (this.mass * 0.9 > players[i].mass)){
            this.mass = this.mass + (players[i].mass/2);
-           this.speed = this.speed - ((players[i].mass/2) * .015);
+           this.speed = this.speed - ((players[i].mass/2) * 0.015);
            players[i].resetPlayer();
       }
     }

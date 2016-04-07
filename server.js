@@ -128,4 +128,3 @@ function deletePlayer(socketID) {
     }
   }
 }
-

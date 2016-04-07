@@ -68,13 +68,13 @@ describe('Player movement', function(){
 
     it("cannot move past the right edge", function() {
       var keysPressed = {68: true};
-      var player = new Player("id", "Player 1", 1993, 100);
+      var player = new Player("id", "Player 1", 2393, 100);
       var canMoveRight = player.canMoveRight();
 
       player.move(keysPressed);
 
       assert.equal(canMoveRight, false);
-      assert.equal(player.x, 1993);
+      assert.equal(player.x, 2393);
     });
 
     it("cannot move past the top edge", function() {
@@ -90,13 +90,13 @@ describe('Player movement', function(){
 
     it("cannot move past the bottom edge", function() {
       var keysPressed = {83: true};
-      var player = new Player("id", "Player 1", 100, 1993);
+      var player = new Player("id", "Player 1", 100, 2393);
       var canMoveDown = player.canMoveDown();
 
       player.move(keysPressed);
 
       assert.equal(canMoveDown, false);
-      assert.equal(player.y, 1993);
+      assert.equal(player.y, 2393);
     });
   });
 });

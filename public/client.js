@@ -1,5 +1,5 @@
-var CANVAS_WIDTH = 2000;
-var CANVAS_HEIGHT = 2000;
+var CANVAS_WIDTH = 2400;
+var CANVAS_HEIGHT = 2400;
 
 //Socket
 ////////////////////////////////////////////////////////////
@@ -225,9 +225,9 @@ function drawViewWindow(currentPlayer) {
     var topLeftY = zoom(currentPlayer.y) - (CANVAS_HEIGHT/8);
     if (topLeftX < 0) { topLeftX = 0; }
     if (topLeftY < 0) { topLeftY = 0; }
-    if (topLeftX + 500 > zoom(CANVAS_WIDTH)) { topLeftX = zoom(CANVAS_WIDTH) - 500; }
-    if (topLeftY + 500 > zoom(CANVAS_HEIGHT)) { topLeftY = zoom(CANVAS_HEIGHT) - 500; }
-    ctx.drawImage(renderingCanvas, topLeftX, topLeftY, 500, 500, 0, 0, 500, 500);
+    if (topLeftX + 600 > zoom(CANVAS_WIDTH)) { topLeftX = zoom(CANVAS_WIDTH) - 600; }
+    if (topLeftY + 600 > zoom(CANVAS_HEIGHT)) { topLeftY = zoom(CANVAS_HEIGHT) - 600; }
+    ctx.drawImage(renderingCanvas, topLeftX, topLeftY, 600, 600, 0, 0, 600, 600);
   }
 }
 ////////////////////////////////////////////////////////////

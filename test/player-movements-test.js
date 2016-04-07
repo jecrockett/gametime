@@ -1,7 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const Player = require('../public/online-player');
+const Player = require('../lib/player');
 
 describe('Player movement', function(){
   context('General movement', function(){

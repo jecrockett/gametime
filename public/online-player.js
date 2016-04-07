@@ -73,10 +73,10 @@ OnlinePlayer.prototype = {
 
   resetPlayer: function(){
     this.mass  = 7;
-    this.x     = Math.floor((Math.random() * CANVAS_WIDTH) + 5);
-    this.y     = Math.floor((Math.random() * CANVAS_HEIGHT) + 5);
     this.speed = 5;
     this.speedBoostTime = null;
+    this.x = Math.floor((Math.random() * CANVAS_WIDTH) + 5);
+    this.y = Math.floor((Math.random() * CANVAS_HEIGHT) + 5);
   },
 
   eatPlayer: function(players){

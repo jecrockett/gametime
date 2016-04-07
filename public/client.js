@@ -70,7 +70,7 @@ ShapeDrawer.prototype = {
     if((1.0 - (player.mass / 450) < 0.65)) {
       fontSize = Math.floor(18/(0.65));
     }
-    console.log(fontSize);
+    
     this.context.textAlign = 'center';
     this.context.fillStyle = 'white';
     this.context.font = fontSize + 'px impact';

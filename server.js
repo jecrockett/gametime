@@ -40,10 +40,6 @@ function gameLoop() {
   }
   playersToDelete = [];
 
-  if(players.length > 0){
-    viruses[0].moveVirus(players[0]);
-  }
-
   gameState = gamePackager.buildGameState(players, food, boosts, viruses);
   IO.sockets.emit('gameState', gameState);
 }

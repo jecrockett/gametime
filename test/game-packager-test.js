@@ -4,8 +4,6 @@ const assert = chai.assert;
 const GamePackager = require('../lib/game-packager');
 const OnlinePlayer = require('../public/online-player');
 const Food = require('../lib/food');
-const SpeedBoost = require('../lib/speed-boost');
-const Virus = require('../lib/virus');
 
 describe('GamePackager', function(){
   context('buildGameState', function(){

@@ -166,12 +166,23 @@ function gameLoop() {
 ////////////////////////////////////////////////////////////
 
 //Append a dynamically updating leader board to the page
+// function appendLeaderBoard(players){
+//   var leaderBoard = $('.list');
+//   $('.player').remove();
+//   players.forEach(function(player){
+//     leaderBoard.prepend('<li class="player">' + player.name +
+//                         '(' + player.mass + ')' + '</li>');
+//   });
+// }
+
 function appendLeaderBoard(players){
   var leaderBoard = $('.list');
   $('.player').remove();
   players.forEach(function(player){
-    leaderBoard.prepend('<li class="player">' + player.name +
-                        '(' + player.mass + ')' + '</li>');
+    leaderBoard.prepend('<div class="player">' +
+                        '<span class="player-name">' + player.name + '</span>' +
+                        '<span class="player-score">' + player.mass + '</span>' +
+                        '</div>');
   });
 }
 /////////////////////////////////////////////////////////////////

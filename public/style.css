@@ -1,5 +1,6 @@
 #game {
-  background: #aaa;
+  background: url('http://i.imgur.com/KJpfKXV.jpg');
+  background-size: contain;
 }
 
 #game-container {
@@ -9,10 +10,13 @@
 
 body {
   font-family: arial;
+  background: url('http://cuzimage.com/images/cool-background-textures-ha-textures-psp.jpg');
+  /*color: white;*/
 }
 
 header {
   text-align: center;
+  color: #f9f9f9;
 }
 
 h2, h3, h6 {
@@ -43,19 +47,6 @@ h2 {
   border-radius: 4px;
 }
 
-.instructions {
-  font-size: 14px;
-  position: fixed;
-  bottom: 10px;
-  width: 100%;
-  text-align: center;
-}
-
-.instructions p {
-  padding: 0 0;
-  margin: 0 0;
-}
-
 .player-info p {
   margin-bottom: 0;
 }
@@ -64,12 +55,17 @@ h2 {
   margin-bottom: 30px;
 }
 
+#name-input {
+  background-color: white;
+}
+
 #submit-info {
   color: black;
   text-decoration: none;
   border: 1px black solid;
   padding: 15px 107px;
   border-radius: 4px;
+  background-color: #f9f9f9;
 }
 
 .instructions-title {
@@ -77,19 +73,60 @@ h2 {
 }
 
 .socket-info {
+  text-align: center;
   position: fixed;
   bottom: 10px;
+  left: 20px;
+  color: #f9f9f9;
+}
+
+.socket-info p {
+  margin: 0 0;
 }
 
 .leader-board {
   position: absolute;
-  width: 200px;
+  width: 260px;
   padding: 20px;
   border: 1px solid black;
-  right: 75px;
+  border-radius: 4px;
+  right: 20px;
   top: 70px;
+  background-color: #f9f9f9;
 }
 
-.leader-board h3 {
+.player-score {
+  float: right;
+}
+
+.player {
+
+}
+
+h3 {
   text-align: center;
+  margin-bottom: 10px;
+}
+
+.instructions {
+  position: absolute;
+  width: 260px;
+  padding: 20px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid black;
+  border-radius: 4px;
+  left: 20px;
+  top: 70px;
+  background-color: #f9f9f9;
+}
+
+.instructions p {
+  padding: 5px 0;
+  margin: 0 0;
+}
+
+.player {
+  border-bottom: 1px dotted black;
+  padding-top: 10px;
 }

@@ -46,12 +46,12 @@ describe('FoodGenerator', function(){
   });
 
   context('Runs the seedViruses function', function(){
-    it('creates eight virus items', function(){
+    it('creates three virus items', function(){
       var canvas = { width: 500, height: 400 };
       var foodGen = new FoodGenerator(canvas.width, canvas.height);
       var player = new Player(1, "J", 5, 5);
       var players = [player];
-      assert.lengthOf(foodGen.seedViruses(players), 8, "Array of virus items is not equal to 8");
+      assert.lengthOf(foodGen.seedViruses(players), 3, "Array of virus items is not equal to 8");
     });
   });
 
@@ -68,7 +68,7 @@ describe('FoodGenerator', function(){
       allFood.splice(0, 1);
       assert.lengthOf(allFood, 199, "Array of food items is not equal to 199");
       foodGen.replaceFood(allFood, speedBoosts, players, viruses);
-      assert.lengthOf(allFood, 200, "Array of food items is not equal to 200");
+      assert.isAbove(allFood.length, 199, "Array of food items is not equal to 200");
     });
   });
 });

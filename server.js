@@ -1,4 +1,4 @@
-var OnlinePlayer = require('./lib/player');
+var Player = require('./lib/player');
 var GamePackager = require('./lib/game-packager');
 var FoodGenerator = require('./lib/food-generator');
 
@@ -29,8 +29,6 @@ APP.get('/', function(req, res) {
 //Initializes new player and start game
 IO.on('connection', playerInitialization);
 setInterval(gameLoop, 45);
-////////////////////////////////////////////////////////////
-
 
 function gameLoop() {
   foodGen.shuffleViruses(viruses, players);
@@ -76,8 +74,6 @@ function playerInitialization(socket) {
   socket.emit("gameState", gameState);
   socket.emit('playerInitialized');
 }
-////////////////////////////////////////////////////////////
-
 
 function checkForAndUpdateUserInfo(channel, message, socket){
   if (channel === 'userInfo') {
@@ -91,7 +87,7 @@ function addPlayer(socket){
   var player_name = ("Player " + (players.length + 1));
   var startingX = Math.floor((Math.random() * CANVAS_WIDTH) + 5);
   var startingY = Math.floor((Math.random() * CANVAS_HEIGHT) + 5);
-  players.push(new OnlinePlayer(socket.id, player_name, startingX, startingY));
+  players.push(new Player(socket.id, player_name, startingX, startingY));
 }
 
 //Takes input form client and send over updated player actions

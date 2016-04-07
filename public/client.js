@@ -70,7 +70,7 @@ ShapeDrawer.prototype = {
     if((1.0 - (player.mass / 450) < 0.65)) {
       fontSize = Math.floor(18/(0.65));
     }
-    
+
     this.context.textAlign = 'center';
     this.context.fillStyle = 'white';
     this.context.font = fontSize + 'px impact';
@@ -199,7 +199,7 @@ function zoom(value) {
 
 //Draw Game State
 ////////////////////////////////////////////////////////////
-function drawGameState(currentPlayer) {
+function drawGameState() {
   if(typeof gameState.players !== "undefined"){
     for(var i = 0; i < gameState.players.length; i++) {
       shapeDrawer.drawPlayer(gameState.players[i]);

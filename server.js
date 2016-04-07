@@ -1,4 +1,4 @@
-var OnlinePlayer = require('./public/online-player');
+var OnlinePlayer = require('./lib/player');
 var GamePackager = require('./lib/game-packager');
 var FoodGenerator = require('./lib/food-generator');
 

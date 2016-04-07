@@ -1,7 +1,7 @@
 const chai = require('chai');
 const assert = chai.assert;
 
-const OnlinePlayer = require('../public/online-player');
+const OnlinePlayer = require('../lib/player');
 
 describe('Players eating each other', function(){
   context('One player can eat another player', function(){

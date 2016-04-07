@@ -73,10 +73,15 @@ h2 {
 }
 
 .socket-info {
+  text-align: center;
   position: fixed;
   bottom: 10px;
   left: 20px;
   color: #f9f9f9;
+}
+
+.socket-info p {
+  margin: 0 0;
 }
 
 .leader-board {

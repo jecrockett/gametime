@@ -10,8 +10,6 @@ describe('OpenCoordinates', function(){
       var canvas = { width: 500, height: 400 };
       var player = new Player(1, "J", 5, 5, "black");
       var player2 = new Player(2, "k", 345, 255, "white");
-      var playerCoords = { x: player.x, y: player.y};
-      var player2Coords = { x: player2.x, y: player2.y};
       var players = [player, player2];
       var openCoordMaker = new OpenCoordinates(canvas.width, canvas.height);
       var coords = [];
@@ -31,4 +29,4 @@ describe('OpenCoordinates', function(){
       });
     });
   });
-})
+});

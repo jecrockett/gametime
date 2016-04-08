@@ -5,8 +5,8 @@ const Player = require('../lib/player');
 
 describe('Player movement', function(){
   context('General movement', function(){
-    it('moves to the left when A is pressed', function(){
-      var keysPressed = {65: true};
+    it('moves to the left when the left arrow is pressed', function(){
+      var keysPressed = {37: true};
       var player = new Player("id", "Player 1", 100, 100);
 
       assert.equal(player.x, 100);
@@ -17,8 +17,8 @@ describe('Player movement', function(){
       assert.equal(player.x, (startingX - player.speed));
     });
 
-    it('moves to the right when D is pressed', function(){
-      var keysPressed = {68: true};
+    it('moves to the right when the right arrow is pressed', function(){
+      var keysPressed = {39: true};
       var player = new Player("id", "Player 1", 100, 100);
 
       assert.equal(player.x, 100);
@@ -29,8 +29,8 @@ describe('Player movement', function(){
       assert.equal(player.x, (startingX + player.speed));
     });
 
-    it('moves up when W is pressed', function(){
-      var keysPressed = {87: true};
+    it('moves up when the up arrow is pressed', function(){
+      var keysPressed = {38: true};
       var player = new Player("id", "Player 1", 100, 100);
 
       assert.equal(player.y, 100);
@@ -41,8 +41,8 @@ describe('Player movement', function(){
       assert.equal(player.y, (startingY - player.speed));
     });
 
-    it('moves down when S is pressed', function(){
-      var keysPressed = {83: true};
+    it('moves down when the down arrow is pressed', function(){
+      var keysPressed = {40: true};
       var player = new Player("id", "Player 1", 100, 100);
 
       assert.equal(player.y, 100);
@@ -56,7 +56,7 @@ describe('Player movement', function(){
 
   context('Player circle reaches the edge of the canvas', function(){
     it("cannot move past the left edge", function() {
-      var keysPressed = {65: true};
+      var keysPressed = {37: true};
       var player = new Player("id", "Player 1", 7, 100);
       var canMoveLeft = player.canMoveLeft();
 
@@ -67,7 +67,7 @@ describe('Player movement', function(){
     });
 
     it("cannot move past the right edge", function() {
-      var keysPressed = {68: true};
+      var keysPressed = {39: true};
       var player = new Player("id", "Player 1", 2393, 100);
       var canMoveRight = player.canMoveRight();
 
@@ -78,7 +78,7 @@ describe('Player movement', function(){
     });
 
     it("cannot move past the top edge", function() {
-      var keysPressed = {87: true};
+      var keysPressed = {38: true};
       var player = new Player("id", "Player 1", 100, 7);
       var canMoveUp = player.canMoveUp();
 
@@ -89,7 +89,7 @@ describe('Player movement', function(){
     });
 
     it("cannot move past the bottom edge", function() {
-      var keysPressed = {83: true};
+      var keysPressed = {40: true};
       var player = new Player("id", "Player 1", 100, 2393);
       var canMoveDown = player.canMoveDown();
 

@@ -8539,24 +8539,44 @@
 	var Virus = __webpack_require__(55);
 
 	describe('Virus', function () {
-	  it('should have an x property', function () {
-	    var virus = new Virus({ x: 40, y: 300 });
-	    assert.equal(virus.x, 40);
+	  context('properties', function () {
+	    it('should have an x property', function () {
+	      var virus = new Virus({ x: 40, y: 300 });
+	      assert.equal(virus.x, 40);
+	    });
+
+	    it('should have a y property', function () {
+	      var virus = new Virus({ x: 40, y: 300 });
+	      assert.equal(virus.y, 300);
+	    });
+
+	    it('should have a default mass', function () {
+	      var virus = new Virus({ x: 40, y: 300 });
+	      assert.isAbove(virus.mass, 0);
+	    });
+
+	    it('should be red by default', function () {
+	      var virus = new Virus({ x: 40, y: 300 });
+	      assert.equal(virus.color, 'red');
+	    });
 	  });
 
-	  it('should have a y property', function () {
-	    var virus = new Virus({ x: 40, y: 300 });
-	    assert.equal(virus.y, 300);
-	  });
+	  context('movement', function () {
+	    it('moves the first virus towards the largest player (positive)', function () {
+	      var virus = new Virus({ x: 100, y: 100 });
+	      var testPlayer = { x: 150, y: 150 };
+	      virus.moveVirus(testPlayer);
+	      assert.isAbove(virus.x, 100);
+	      assert.isAbove(virus.y, 100);
+	    });
 
-	  it('should have a default mass', function () {
-	    var virus = new Virus({ x: 40, y: 300 });
-	    assert.isAbove(virus.mass, 0);
-	  });
-
-	  it('should be red by default', function () {
-	    var virus = new Virus({ x: 40, y: 300 });
-	    assert.equal(virus.color, 'red');
+	    it('moves the first virus towards the largest player (negative)', function () {
+	      var virus = new Virus({ x: 100, y: 100 });
+	      var testPlayer = { x: 50, y: 50 };
+	      virus.moveVirus(testPlayer);
+	      assert.isBelow(virus.x, 100);
+	      assert.isBelow(virus.y, 100);
+	    });
 	  });
 	});
 
@@ -8576,16 +8596,8 @@
 
 	Virus.prototype = {
 	  moveVirus: function moveVirus(largestPlayer) {
-	    if (largestPlayer.x >= this.x) {
-	      this.x += 0.55;
-	    } else {
-	      this.x -= 0.55;
-	    }
-	    if (largestPlayer.y >= this.y) {
-	      this.y += 0.55;
-	    } else {
-	      this.y -= 0.55;
-	    }
+	    largestPlayer.x >= this.x ? this.x += 0.65 : this.x -= 0.65;
+	    largestPlayer.y >= this.y ? this.y += 0.65 : this.y -= 0.65;
 	  }
 	};
 
@@ -8603,6 +8615,8 @@
 	var GamePackager = __webpack_require__(57);
 	var OnlinePlayer = __webpack_require__(58);
 	var Food = __webpack_require__(51);
+	var SpeedBoost = __webpack_require__(53);
+	var Virus = __webpack_require__(55);
 
 	describe('GamePackager', function () {
 	  context('buildGameState', function () {
@@ -8611,8 +8625,8 @@
 	      var player2 = new OnlinePlayer('id2', 'name2', 250, 250);
 	      var players = [player1, player2];
 	      var allFood = [new Food({ x: 100, y: 200 }), new Food({ x: 50, y: 75 })];
-	      var allBoosts = [new Food({ x: 100, y: 200 }), new Food({ x: 50, y: 75 })];
-	      var allViruses = [new Food({ x: 100, y: 200 }), new Food({ x: 50, y: 75 })];
+	      var allBoosts = [new SpeedBoost({ x: 100, y: 200 }), new SpeedBoost({ x: 50, y: 75 })];
+	      var allViruses = [new Virus({ x: 100, y: 200 }), new Virus({ x: 50, y: 75 })];
 
 	      var gamePackager = new GamePackager();
 	      var gameState = gamePackager.buildGameState(players, allFood, allBoosts, allViruses);
@@ -8628,8 +8642,8 @@
 	      assert.equal(gameState.food[0].y, 200);
 	      assert.equal(gameState.boosts[0].x, 100);
 	      assert.equal(gameState.boosts[0].y, 200);
-	      assert.equal(gameState.viruses[0].x, 100);
-	      assert.equal(gameState.viruses[0].y, 200);
+	      assert.equal(gameState.viruses[1].x, 50);
+	      assert.equal(gameState.viruses[1].y, 75);
 	    });
 	  });
 
@@ -8670,6 +8684,11 @@
 	    var basePlayers = this.packagePlayers(players).sort(function (a, b) {
 	      return a.mass - b.mass;
 	    });
+
+	    if (basePlayers.length > 0) {
+	      allViruses[0].moveVirus(basePlayers[basePlayers.length - 1]);
+	    }
+
 	    return { players: basePlayers,
 	      food: allFood,
 	      boosts: allBoosts,
@@ -8700,7 +8719,7 @@
 	var CANVAS_WIDTH = 2400;
 	var CANVAS_HEIGHT = 2400;
 
-	function OnlinePlayer(id, name, x, y) {
+	function Player(id, name, x, y) {
 	  this.id = id;
 	  this.name = name;
 	  this.x = x;
@@ -8726,7 +8745,7 @@
 	  this.moveDown = this.movePlayer.bind(this, 0, 1);
 	}
 
-	OnlinePlayer.prototype = {
+	Player.prototype = {
 	  move: function move(keysPressed) {
 	    if (keysPressed[65] && this.canMoveLeft()) {
 	      this.moveLeft();
@@ -8739,68 +8758,6 @@
 	    }
 	    if (keysPressed[87] && this.canMoveUp()) {
 	      this.moveUp();
-	    }
-	  },
-
-	  eatFood: function eatFood(food) {
-	    for (var i = 0; i < food.length; i++) {
-	      var xDiff = this.x - food[i].x;
-	      var yDiff = this.y - food[i].y;
-	      var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	      if (distance < this.mass) {
-	        food.splice(i, 1);
-	        this.mass += 1;
-	      }
-	    }
-	  },
-
-	  eatBoosts: function eatBoosts(boosts) {
-	    for (var i = 0; i < boosts.length; i++) {
-	      var xDiff = this.x - boosts[i].x;
-	      var yDiff = this.y - boosts[i].y;
-	      var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	      if (distance < this.mass) {
-	        boosts.splice(i, 1);
-	        this.speedBoostTime = Date.now();
-	      }
-	    }
-	  },
-
-	  eatViruses: function eatViruses(viruses) {
-	    for (var i = 0; i < viruses.length; i++) {
-	      var xDiff = this.x - viruses[i].x;
-	      var yDiff = this.y - viruses[i].y;
-	      var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	      if (distance < this.mass + viruses[i].mass && this.mass * 0.9 > viruses[i].mass) {
-	        viruses.splice(i, 1);
-	        this.mass = this.mass / 2;
-	      }
-	    }
-	  },
-
-	  resetPlayer: function resetPlayer() {
-	    this.mass = 7;
-	    this.speed = 5;
-	    this.speedBoostTime = null;
-	    this.x = Math.floor(Math.random() * CANVAS_WIDTH + 5);
-	    this.y = Math.floor(Math.random() * CANVAS_HEIGHT + 5);
-	  },
-
-	  eatPlayer: function eatPlayer(players) {
-	    for (var i = 0; i < players.length; i++) {
-	      var xDiff = this.x - players[i].x;
-	      var yDiff = this.y - players[i].y;
-	      var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	      if (this.mass > distance + players[i].mass * 0.5 && players[i] !== this && this.mass * 0.9 > players[i].mass) {
-	        this.mass = this.mass + players[i].mass / 2;
-	        players[i].resetPlayer();
-	      }
-	    }
-	  },
-
-	  resetBoosts: function resetBoosts() {
-	    if (this.speedBoostTime < Date.now() - 1200) {
-	      this.speedBoostTime = null;
 	    }
 	  },
 
@@ -8820,15 +8777,71 @@
 	    return this.y + this.mass < CANVAS_HEIGHT;
 	  },
 
+	  collisionDistance: function collisionDistance(object) {
+	    var xDiff = this.x - object.x;
+	    var yDiff = this.y - object.y;
+	    return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+	  },
+
+	  eatFood: function eatFood(food) {
+	    for (var i = 0; i < food.length; i++) {
+	      if (this.collisionDistance(food[i]) < this.mass) {
+	        food.splice(i, 1);
+	        this.mass += 1;
+	      }
+	    }
+	  },
+
+	  eatBoosts: function eatBoosts(boosts) {
+	    for (var i = 0; i < boosts.length; i++) {
+	      if (this.collisionDistance(boosts[i]) < this.mass) {
+	        boosts.splice(i, 1);
+	        this.speedBoostTime = Date.now();
+	      }
+	    }
+	  },
+
+	  eatViruses: function eatViruses(viruses) {
+	    for (var i = 0; i < viruses.length; i++) {
+	      if (this.collisionDistance(viruses[i]) < this.mass + viruses[i].mass && this.mass * 0.9 > viruses[i].mass) {
+	        viruses.splice(i, 1);
+	        this.mass = this.mass / 2;
+	      }
+	    }
+	  },
+
+	  eatPlayer: function eatPlayer(players) {
+	    for (var i = 0; i < players.length; i++) {
+	      if (this.mass > this.collisionDistance(players[i]) + players[i].mass * 0.5 && players[i] !== this && this.mass * 0.9 > players[i].mass) {
+	        this.mass = this.mass + players[i].mass / 2;
+	        players[i].resetPlayer();
+	      }
+	    }
+	  },
+
+	  resetPlayer: function resetPlayer() {
+	    this.mass = 7;
+	    this.speed = 5;
+	    this.speedBoostTime = null;
+	    this.x = Math.floor(Math.random() * CANVAS_WIDTH + 5);
+	    this.y = Math.floor(Math.random() * CANVAS_HEIGHT + 5);
+	  },
+
+	  resetBoosts: function resetBoosts() {
+	    if (this.speedBoostTime < Date.now() - 1200) {
+	      this.speedBoostTime = null;
+	    }
+	  },
+
 	  updateSpeed: function updateSpeed() {
 	    this.speed = 5 - (this.mass - 7) * 0.015;
 	    if (this.speed < 0.75) {
 	      this.speed = 0.75;
-	    };
+	    }
 	  }
 	};
 
-	module.exports = OnlinePlayer;
+	module.exports = Player;
 
 /***/ },
 /* 59 */
@@ -8884,12 +8897,12 @@
 	  });
 
 	  context('Runs the seedViruses function', function () {
-	    it('creates eight virus items', function () {
+	    it('creates three virus items', function () {
 	      var canvas = { width: 500, height: 400 };
 	      var foodGen = new FoodGenerator(canvas.width, canvas.height);
 	      var player = new Player(1, "J", 5, 5);
 	      var players = [player];
-	      assert.lengthOf(foodGen.seedViruses(players), 8, "Array of virus items is not equal to 8");
+	      assert.lengthOf(foodGen.seedViruses(players), 3, "Array of virus items is not equal to 8");
 	    });
 	  });
 
@@ -8906,7 +8919,7 @@
 	      allFood.splice(0, 1);
 	      assert.lengthOf(allFood, 199, "Array of food items is not equal to 199");
 	      foodGen.replaceFood(allFood, speedBoosts, players, viruses);
-	      assert.lengthOf(allFood, 200, "Array of food items is not equal to 200");
+	      assert.isAbove(allFood.length, 199, "Array of food items is not equal to 200");
 	    });
 	  });
 	});
@@ -8949,27 +8962,32 @@
 
 	  seedViruses: function seedViruses(players) {
 	    var viruses = [];
-	    for (var i = 0; i < 8; i++) {
+	    for (var i = 0; i < 3; i++) {
 	      viruses.push(new Virus(this.coordGenerator.create(players)));
 	    }
 	    return viruses;
 	  },
 
 	  replaceFood: function replaceFood(allFood, speedBoosts, players, viruses) {
-	    while (allFood.length < 200) {
-	      var foodItem = new Food(this.coordGenerator.create(players));
-	      allFood.push(foodItem);
+	    if (allFood.length < 200) {
+	      for (var i = 0; i < 10; i++) {
+	        allFood.push(new Food(this.coordGenerator.create(players)));
+	      }
 	    }
-	    while (speedBoosts.length < 15) {
-	      speedBoosts.push(new SpeedBoost(this.coordGenerator.create(players)));
+
+	    if (speedBoosts.length < 15) {
+	      for (var j = 0; j < 4; j++) {
+	        speedBoosts.push(new SpeedBoost(this.coordGenerator.create(players)));
+	      }
 	    }
-	    while (viruses.length < 8) {
+
+	    if (viruses.length < 3) {
 	      viruses.push(new Virus(this.coordGenerator.create(players)));
 	    }
 	  },
 
 	  shuffleViruses: function shuffleViruses(viruses, players) {
-	    for (i = 0; i < viruses.length; i++) {
+	    for (var i = 0; i < viruses.length; i++) {
 	      if (viruses[i].birthTime < Date.now() - 300000) {
 	        viruses.splice(i, 1);
 	        viruses.push(new Virus(this.coordGenerator.create(players)));
@@ -8987,32 +9005,28 @@
 	"use strict";
 
 	function OpenCoordinates(canvasWidth, canvasHeight) {
-	  this.canvasWidth = canvasWidth, this.canvasHeight = canvasHeight;
+	  this.canvasWidth = canvasWidth;
+	  this.canvasHeight = canvasHeight;
 	}
 
 	OpenCoordinates.prototype = {
 	  create: function create(players) {
-	    var newCoords = { x: Math.floor(Math.random() * (this.canvasWidth - 10) + 5),
-	      y: Math.floor(Math.random() * (this.canvasHeight - 10) + 5) };
+	    var newCoords;
 	    var isNotInsidePlayer = false;
-	    var canWidth = this.canvasWidth;
-	    var canHeight = this.canvasHeight;
-
-	    function checkPlayer(player) {
-	      var xDiff = newCoords.x - player.x;
-	      var yDiff = newCoords.y - player.y;
-	      var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	      return distance > player.mass + 20;
-	    }
 
 	    while (!isNotInsidePlayer) {
-	      isNotInsidePlayer = players.every(checkPlayer);
-	      if (!isNotInsidePlayer) {
-	        newCoords = { x: Math.floor(Math.random() * (canWidth - 10) + 5),
-	          y: Math.floor(Math.random() * (canHeight - 10) + 5) };
-	      }
+	      newCoords = { x: Math.floor(Math.random() * (this.canvasWidth - 10) + 5),
+	        y: Math.floor(Math.random() * (this.canvasHeight - 10) + 5) };
+	      isNotInsidePlayer = players.every(this.checkPlayer.bind(this, newCoords));
 	    }
 	    return newCoords;
+	  },
+
+	  checkPlayer: function checkPlayer(coords, player) {
+	    var xDiff = coords.x - player.x;
+	    var yDiff = coords.y - player.y;
+	    var distance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+	    return distance > player.mass + 20;
 	  }
 	};
 

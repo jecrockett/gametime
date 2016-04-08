@@ -20,7 +20,7 @@ describe('Player eating speed boosts', function(){
   });
 
   it("makes the player move twice as far", function() {
-    var keysPressed = {65: true};
+    var keysPressed = {37: true};
     let player = new Player("id", "Joe", 100, 100);
     var boost = new SpeedBoost( { x: player.x - player.mass, y: player.y} );
     var boostArray = [boost];
@@ -38,7 +38,7 @@ describe('Player eating speed boosts', function(){
   });
 
   it("stops doubling a boosted player's movement after 1200 ms", function() {
-    var keysPressed = {65: true};
+    var keysPressed = {37: true};
     let player = new Player("id", "Joe", 100, 100);
     var boost = new SpeedBoost( { x: player.x, y: player.y} );
     var boostArray = [boost];

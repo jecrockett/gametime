@@ -52,6 +52,69 @@ describe('Player movement', function(){
 
       assert.equal(player.y, (startingY + player.speed));
     });
+
+    it('moves to the left when A is pressed', function(){
+      var keysPressed = {65: true};
+      var player = new Player("id", "Player 1", 100, 100);
+
+      assert.equal(player.x, 100);
+
+      var startingX = player.x;
+      player.move(keysPressed);
+
+      assert.equal(player.x, (startingX - player.speed));
+    });
+
+    it('moves to the right when D is pressed', function(){
+      var keysPressed = {68: true};
+      var player = new Player("id", "Player 1", 100, 100);
+
+      assert.equal(player.x, 100);
+
+      var startingX = player.x;
+      player.move(keysPressed);
+
+      assert.equal(player.x, (startingX + player.speed));
+    });
+
+    it('moves up when W is pressed', function(){
+      var keysPressed = {87: true};
+      var player = new Player("id", "Player 1", 100, 100);
+
+      assert.equal(player.y, 100);
+
+      var startingY = player.y;
+      player.move(keysPressed);
+
+      assert.equal(player.y, (startingY - player.speed));
+    });
+
+    it('moves down when S is pressed', function(){
+      var keysPressed = {83: true};
+      var player = new Player("id", "Player 1", 100, 100);
+
+      assert.equal(player.y, 100);
+
+      var startingY = player.y;
+      player.move(keysPressed);
+
+      assert.equal(player.y, (startingY + player.speed));
+    });
+  });
+
+  context('Player uses both WASD and arrow inputs at the same time', function() {
+    it('Does not double player movement', function() {
+      var keysPressed = {83: true, 40: true};
+      var player = new Player("id", "Player 1", 100, 100);
+
+      assert.equal(player.y, 100);
+
+      var startingY = player.y;
+      player.move(keysPressed);
+
+      assert.notEqual(player.y, ((startingY + player.speed) * 2));
+      assert.equal(player.y, (startingY + player.speed));
+    });
   });
 
   context('Player circle reaches the edge of the canvas', function(){

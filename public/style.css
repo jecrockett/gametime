@@ -49,6 +49,7 @@ h2 {
 
 .player-info p {
   margin-bottom: 0;
+  color: #f9f9f9;
 }
 
 #color-input {
@@ -119,6 +120,17 @@ h3 {
   left: 20px;
   top: 70px;
   background-color: #f9f9f9;
+}
+
+#or-controls {
+
+ margin-left: 121px;
+}
+
+#wasd-controls {
+float: right;
+margin-right: 40px;
+letter-spacing: .8px;
 }
 
 .instructions p {

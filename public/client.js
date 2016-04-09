@@ -95,13 +95,15 @@ var keysPressed = {};
 //Key Press Listeners
 ////////////////////////////////////////////////////////////
 this.onkeydown = function(event) {
-    if([65, 68, 83, 87].includes(event.keyCode)){
+    if([37, 38, 39, 40].includes(event.keyCode)){
+      event.preventDefault();
       keysPressed[event.keyCode] = true;
     }
 };
 
 this.onkeyup = function(event) {
-    if([65, 68, 83, 87].includes(event.keyCode)){
+    if([37, 38, 39, 40].includes(event.keyCode)){
+      event.preventDefault();
       keysPressed[event.keyCode] = false;
     }
 };

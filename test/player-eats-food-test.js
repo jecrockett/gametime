@@ -46,7 +46,7 @@ describe('Player eating food', function(){
 
   it('cannot skip over food at starting speed', function(){
     let player = new Player("id", "Player 1", 27, 20);
-    var keysPressed = {65: true};
+    var keysPressed = {37: true};
     var food = new Food( { x: (player.x - player.mass), y: player.y} );
     var foodArray = [food];
 
@@ -67,7 +67,7 @@ describe('Player eating food', function(){
     // max speed is starting speed times two due to a speed boost
     let player = new Player("id", "Player 1", 27, 20);
     player.speed = (player.speed * 2);
-    var keysPressed = {65: true};
+    var keysPressed = {37: true};
     var food = new Food( { x: (player.x - player.mass), y: player.y} );
     var foodArray = [food];
 

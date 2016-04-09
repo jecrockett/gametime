@@ -121,6 +121,17 @@ h3 {
   background-color: #f9f9f9;
 }
 
+#or-controls {
+
+ margin-left: 121px;
+}
+
+#wasd-controls {
+float: right;
+margin-right: 40px;
+letter-spacing: .8px;
+}
+
 .instructions p {
   padding: 5px 0;
   margin: 0 0;

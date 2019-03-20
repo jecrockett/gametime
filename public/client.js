@@ -189,7 +189,7 @@ function appendLeaderBoard(players){
 ////////////////////////////////////////////////////////////
 function findPlayer(socketID) {
   for(var i = 0; i < gameState.players.length; i++) {
-    if (gameState.players[i].id.substring(2) === socketID) {
+    if (socketID.indexOf(gameState.players[i].id) !== 1) {
       return gameState.players[i];
     }
   }

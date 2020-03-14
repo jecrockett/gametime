@@ -40,7 +40,7 @@
   "dependencies": {
     "@babel/core": "^7.4.0",
     "@babel/register": "^7.4.0",
-    "acorn": "^6.1.1",
+    "acorn": "^6.4.1",
     "acorn-dynamic-import": "^4.0.0",
     "express": "^4.13.4",
     "socket.io": "^2.2.0"

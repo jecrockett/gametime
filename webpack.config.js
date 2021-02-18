@@ -1,7 +1,7 @@
 module.exports = {
   entry: {
     main: "./lib/index.js",
-    test: "mocha-loader!./test/index.js"
+    test: ["mocha-loader", "./test/index.js"]
   },
   output: {
     path: __dirname + '/public',
@@ -9,12 +9,16 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
-      { test: /\.css$/, loader: "style!css" },
-      { test: /\.scss$/, loader: "style!css!sass" }
+      { test: /\.js$/, exclude: /node_modules/, use: ['babel-loader'] },
+      { test: /\.css$/, use: ["style-loader", "css-loader"] },
+      { test: /\.scss$/, use: ["style-loader", "css-loader", "sass-loader"] }
     ]
   },
   resolve: {
-    extensions: ['.js', '.json', '.scss', '.css']
+    extensions: ['.js', '.json', '.scss', '.css'],
+    fallback: {
+      "crypto": false,
+      "path": false
+    }
   }
 };
